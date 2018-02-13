@@ -7,10 +7,14 @@ var patterns = [
   {id: 4, title: 'Fourth', description: 'Desc'}
 ];
 
-/* GET users listing. */
-router.get('/pattern/:id', function(req, res, next) {
-  res.send(getPattern(1));
-});
+let patRouter = function(req, res, next) {
+  setTimeout(function(){
+    res.header("Access-Control-Allow-Origin", "http://localhost:4200");
+    res.cookie('cookie', 'it is cookie man !');
+    res.send(patterns);
+    next();
+  }, 20);
+};
 
 function getPattern(id) {
   return patterns.filter(function (item) {
@@ -18,4 +22,4 @@ function getPattern(id) {
   });
 }
 
-module.exports = router;
+module.exports = patRouter;

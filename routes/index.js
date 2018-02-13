@@ -14,23 +14,14 @@ router.get('/', function(req, res, next) {
   setTimeout(function(){
     res.header("Access-Control-Allow-Origin", "http://localhost:4200");
     res.send(patterns);
-  }, 2000);
-});
-
-/* GET users listing. */
-router.get('/pattern/:id', function(req, res, next) {
-  setTimeout(function(){
-    res.header("Access-Control-Allow-Origin", "http://localhost:4200");
-    res.send(getPattern(req.params.id));
-  }, 2000);
+    next();
+  }, 20);
 });
 
 function getPattern(id) {
- 
   var requested_item =  patterns.find(function (item) {
     return item.id == id;
   });
-
   return requested_item;
 }
 
