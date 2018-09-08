@@ -36,7 +36,12 @@ const server = http.createServer((req, res) => {
 
     const chosenHandler = typeof(routers[path]) !== 'undefined' ? routers[path] : handlers.notFound;
     chosenHandler(data, (statusCode, data) => {
+      statusCode = typeof(statusCode) == 'number' ? statusCode : 200;
+      data = typeof(data) == 'object' ? data : {};
+
       let responseData = JSON.stringify(data);
+
+      res.setHeader('Content-type', 'application/json');
       res.writeHead(statusCode);
       res.end(responseData);// + buffer + '\n');
     });
