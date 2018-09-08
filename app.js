@@ -5,7 +5,8 @@
 //Dependencies
 const http = require('http');
 const url = require('url');
-const StringDecoder = require('string_decoder').StringDecoder;
+const StringDecoder = require('string_decoder').StringDecoder,
+      config = require('./config');
 
 const server = http.createServer((req, res) => {
   let parsedUrl = url.parse(req.url, true);
@@ -48,8 +49,8 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(3001, () => {
-  console.log('Server started');
+server.listen(config.port, () => {
+  console.log('Server started on port ' + config.port + ' with ' + config.envName + ' evn' );
 });
 
 //define handlers
