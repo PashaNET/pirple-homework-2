@@ -1,23 +1,20 @@
-const StringDecoder = require('string_decoder').StringDecoder;
-const url = require('url');
+const StringDecoder = require('string_decoder').StringDecoder,
+      url = require('url');
 
 function unifiedServer(req, res){
-    let parsedUrl = url.parse(req.url, true);
-  
-    let queryStringObj = parsedUrl.query;
-    let path = parsedUrl.pathname.replace(/^\/+|\/+$/g, '');
-    let method = req.method.toLocaleLowerCase();
-    let headersObj = req.headers;
-  
-    let decoder = new StringDecoder('utf-8');
-    let buffer = '';
+    let parsedUrl = url.parse(req.url, true),
+        queryStringObj = parsedUrl.query,
+        path = parsedUrl.pathname.replace(/^\/+|\/+$/g, ''),
+        method = req.method.toLocaleLowerCase(),
+        headersObj = req.headers,
+        decoder = new StringDecoder('utf-8'),
+        buffer = '';
+
     req.on('data', (data) => {
       buffer += decoder.write(data);
-      // console.log('line-->' + buffer + '\n');
     });
     req.on('end', () => {
       buffer += decoder.end();
-      // console.log(headersObj);
   
       let data = {
         parsedUrl: parsedUrl,
@@ -45,8 +42,8 @@ function unifiedServer(req, res){
 //define handlers TODO: move to separate file 
 let handlers = {};
 
-handlers.home = (data, callback) => {
-  callback(200, {home: 'succesfull handled', data: data})
+handlers.hello = (data, callback) => {
+  callback(200, {helloPage: 'Hello World', data: data})
 };
 handlers.aboutUs = (data, callback) => {
   callback(200, {about: 'succesfull handled', data: data})
@@ -57,7 +54,7 @@ handlers.notFound = (data, callback) => {
 
 //define router obj
 let routers = {
-  home: handlers.home,
+  hello: handlers.hello,
   about: handlers.aboutUs
 }
 

@@ -3,11 +3,11 @@
 */
 
 //Dependencies
-const http = require('http');
-const https = require('https');
-const config = require('./config');
-const unifiedServer = require('./unifiedServer');
-const fs = require('fs');
+const http = require('http'),
+      https = require('https'),
+      config = require('./config'),
+      unifiedServer = require('./unifiedServer'),
+      fs = require('fs');
 
 const httpServer = http.createServer((req, res) => {
   unifiedServer(req, res);
@@ -21,9 +21,9 @@ const httpsServer = https.createServer(httpsServerParams, (req, res) => {
   unifiedServer(req, res);
 });
 
-httpServer.listen(config.port, () => {
+httpServer.listen(config.httpPort, () => {
   console.log('Server started on port ' + config.httpPort + ' with ' + config.envName + ' evn' );
 });
-httpsServer.listen(config.port, () => {
+httpsServer.listen(config.httpsPort, () => {
   console.log('Server started on port ' + config.httpsPort + ' with ' + config.envName + ' evn' );
 });
