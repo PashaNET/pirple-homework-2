@@ -45,6 +45,9 @@ let handlers = {};
 handlers.hello = (data, callback) => {
   callback(200, {helloPage: 'Hello World', data: data})
 };
+handlers.ping = (data, callback) => {
+  callback(200)
+};
 handlers.aboutUs = (data, callback) => {
   callback(200, {about: 'succesfull handled', data: data})
 };
@@ -52,10 +55,10 @@ handlers.notFound = (data, callback) => {
   callback(403, {error: 'page not found', data: data})
 }
 
-//define router obj
 let routers = {
   hello: handlers.hello,
+  ping: handlers.ping,
   about: handlers.aboutUs
 }
 
-  module.exports = unifiedServer;
+module.exports = unifiedServer;
