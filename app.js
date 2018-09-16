@@ -5,8 +5,8 @@
 //Dependencies
 const http = require('http'),
       https = require('https'),
-      config = require('./config'),
-      unifiedServer = require('./unifiedServer'),
+      config = require('./src/config'),
+      unifiedServer = require('./src/unifiedServer'),
       fs = require('fs');
 
 const httpServer = http.createServer((req, res) => {
