@@ -12,11 +12,8 @@ function unifiedServer(req, res){
     req.on('data', (data) => {
       buffer += decoder.write(data);
     });
+    
     req.on('end', () => {
-      
-      database.create('test', 'testFileName', buffer, (response) => {
-        console.log('res from database', response);
-      })
       const chosenHandler = typeof(routers[path]) !== 'undefined' ? routers[path] : routers['notFound'];
       chosenHandler(buffer, (statusCode, data) => {
         statusCode = typeof(statusCode) == 'number' ? statusCode : 200;
