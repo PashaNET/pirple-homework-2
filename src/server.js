@@ -1,5 +1,7 @@
 const StringDecoder = require('string_decoder').StringDecoder,
-      url = require('url');
+      url = require('url'),
+      database = require('./servises/database'),
+      routers = require('./routers');
 
 function unifiedServer(req, res){
     let parsedUrl = url.parse(req.url, true),
@@ -11,10 +13,12 @@ function unifiedServer(req, res){
       buffer += decoder.write(data);
     });
     req.on('end', () => {
-      let data = {}
-  
-      const chosenHandler = typeof(routers[path]) !== 'undefined' ? routers[path] : handlers.notFound;
-      chosenHandler(data, (statusCode, data) => {
+      
+      database.create('test', 'testFileName', buffer, (response) => {
+        console.log('res from database', response);
+      })
+      const chosenHandler = typeof(routers[path]) !== 'undefined' ? routers[path] : routers['notFound'];
+      chosenHandler(buffer, (statusCode, data) => {
         statusCode = typeof(statusCode) == 'number' ? statusCode : 200;
         data = typeof(data) == 'object' ? data : {};
   
@@ -26,15 +30,6 @@ function unifiedServer(req, res){
       });
     });
   }
-  
-let handlers = {};
 
-handlers.ping = (data, callback) => {
-  callback(200)
-};
-
-let routers = {
-  ping: handlers.ping
-}
 
 module.exports = unifiedServer;
