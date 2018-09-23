@@ -6,7 +6,7 @@ const pingController = require('./controllers/pingController'),
 let routers = {
   ping: pingController,
   notFound: null,
-  user: userController
+  user: userController 
 }
 
 module.exports = routers;

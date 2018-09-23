@@ -9,17 +9,25 @@ const fs = require('fs'),
 let basePath = path.join(__dirname, '../../.data');
 
 //Private method to create fullPath string
-function _getPathToTheFile(dir, fileName){
+function _concatPathToTheFile(dir, fileName){
     return basePath + '/' + dir + '/' + fileName + '.json';
+}
+
+//Private method to create response object
+function _prepareResponse(message = "", err = null, data = {}){
+    return {
+        message: message,
+        err: err,
+        data: data
+    }
 }
 
 //Container for methods (to be exported)
 let database = {};
-
 //Create new file and put data
 database.create = (dir, fileName, data, callback) => {
     //open file for writing
-    fs.open(_getPathToTheFile(dir, fileName), 'wx', (err, fileDescriptor) => {
+    fs.open(_concatPathToTheFile(dir, fileName), 'wx', (err, fileDescriptor) => {
         if(!err && fileDescriptor){
             //convert data to json string
             data = JSON.stringify(data); 
@@ -29,14 +37,14 @@ database.create = (dir, fileName, data, callback) => {
                 if(!err){
                     fs.close(fileDescriptor, (err) => {
                         let responseMessage = err ? 'Can\'t close file' : 'Data has been written';
-                        callback({response: responseMessage});
+                        callback(_prepareResponse(responseMessage, err));
                     });
                 } else {
-                    callback({response: 'Can\'t write to file'});
+                    callback(_prepareResponse('Can\'t write to file', err));
                 }
             });
         } else {
-            callback({response: 'Can\'t create new file'});
+            callback(_prepareResponse('Can\'t create new file it might exist', err));
         }
     });
 };
@@ -44,16 +52,16 @@ database.create = (dir, fileName, data, callback) => {
 //Read data from file
 database.read = (dir, fileName, callback) => {
     //read the file and return data
-    fs.readFile(_getPathToTheFile(dir, fileName), 'utf-8', (err, data) => {
-        let responseMessage = err ? 'Can\'t read file' : data;
-        callback({response: responseMessage});
+    fs.readFile(_concatPathToTheFile(dir, fileName), 'utf-8', (err, data) => {
+        let responseMessage = err ? 'Can\'t read file' : 'OK';
+        callback(_prepareResponse(responseMessage, err, data));
     });
 };
 
 //Update file with new data
 database.update = (dir, fileName, data, callback) => {
     //open file for writing
-    fs.open(_getPathToTheFile(dir, fileName), 'r+', (err, fileDescriptor) => {
+    fs.open(_concatPathToTheFile(dir, fileName), 'r+', (err, fileDescriptor) => {
         if(!err && fileDescriptor){
             //convert data to json string
             data = JSON.stringify(data); 
@@ -63,23 +71,23 @@ database.update = (dir, fileName, data, callback) => {
                 if(!err){
                     fs.close(fileDescriptor, (err) => {
                         let responseMessage = err ? 'Can\'t close file' : 'Data has been updated';
-                        callback({response: responseMessage});
+                        callback(_prepareResponse(responseMessage, err));
                     });
                 } else {
-                    callback({response: 'Can\'t write to file'});
+                    callback(_prepareResponse('Can\'t write to file', err));
                 }
             });
         } else {
-            callback({response: 'Can\'t create new file'});
+            callback(_prepareResponse('Can\'t create new file', err));
         }
     });
 };
 
 database.delete = (dir, fileName, callback) => {
     //Unlink the file
-    fs.unlink(_getPathToTheFile(dir, fileName), (err) => {
+    fs.unlink(_concatPathToTheFile(dir, fileName), (err) => {
         let responseMessage = err ? 'Can\'t delete file' : 'File has been deleted';
-        callback({response: responseMessage});
+        callback(_prepareResponse(responseMessage, err));
     });
 };
 
