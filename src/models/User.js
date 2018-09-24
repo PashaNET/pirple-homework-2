@@ -41,6 +41,7 @@ class User {
             let user = {};
             if(!response.err){
                 let data = JSON.parse(response.data);//add to helpers save Json
+                
                 delete data.password;
                 user = new User(data);
             }
