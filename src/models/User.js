@@ -11,7 +11,7 @@ class User {
     constructor(data = {}){
         this.firstName = data.firstName;
         this.lastName = data.lastName;
-        this.phone = data.phone;
+        this.email = data.email;
         this.agreement = data.agreement;
         this.password = data.password;
     }
@@ -33,14 +33,14 @@ class User {
     }
 
     /**
-     *  Get user from db by his phone number
+     *  Get user from db by his email number
      * @param {*} callback 
      */
-    static getByPhoneNumber(phone, callback){
-        database.read(User.getCollectionName(), phone, (response) => {
+    static getByEmail(email, callback){
+        database.read(User.getCollectionName(), email, (response) => {
             let user = {};
             if(!response.err){
-                let data = JSON.parse(response.data);
+                let data = JSON.parse(response.data);//add to helpers save Json
                 delete data.password;
                 user = new User(data);
             }
@@ -58,14 +58,14 @@ class User {
         this.password = helpers.hash(this.password);
         
         //create file for new user
-        database.create(User.getCollectionName(), this.phone, this, (response) => {
+        database.create(User.getCollectionName(), this.email, this, (response) => {
             //return response to controller 
             callback(response.err, response.message);
         });
     }
 
     update(callback){
-        database.update(User.getCollectionName(), this.phone, this, (response) => {
+        database.update(User.getCollectionName(), this.email, this, (response) => {
             //return response to controller 
             callback(response.err, response.message, response.data);
         });
@@ -76,7 +76,7 @@ class User {
      * @param {*} callback 
      */
     delete(callback){
-        database.delete(User.getCollectionName(), this.phone, (response) => {
+        database.delete(User.getCollectionName(), this.email, (response) => {
             //return response to controller 
             callback(response.err, response.message);
         })

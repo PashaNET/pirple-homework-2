@@ -9,6 +9,11 @@ validators.isValidPhoneNumber = (str) => {
     return typeof(str) == 'string' && str.trim().length >= 10;
 };
 
+validators.isValidEmail = (str) => {
+    //TODO regexp
+    return typeof(str) == 'string' && str.trim().length >= 10;
+};
+
 validators.isValidAgreement = (agreement) => {
     return typeof(agreement) == 'boolean' && agreement == true;
 };

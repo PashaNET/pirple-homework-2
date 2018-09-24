@@ -2,27 +2,27 @@
 const validators = require('../servises/validators'),
       User = require('../models/User');
 
-let user = (data, callback) => {
+let token = (data, callback) => {
     let allowedMethods = ['get', 'put', 'post', 'delete'];
 
     //check if request method allowed for this controller
     if(allowedMethods.indexOf(data.method) > -1) {
         //get action according to request method
-        _user[data.method](data.payload, callback);
+        _token[data.method](data.payload, callback);
     } else {
         callback(405);
     }
 };
 
-_user = {};
+_token = {};
 
-_user.get = (data, callback) => {
+_token.get = (data, callback) => {
     //check if number suit requirements
-    let isEmailValid = validators.isValidEmail(data.email);
+    let isEmailValid = validators.isValidEmail(data.Email);
 
     if(isEmailValid){
         //check if user exist
-        User.getByEmail(data.email, (err, message, user) => {
+        User.getByEmail(data.Email, (err, message, user) => {
             if(!err){
                 callback(200, user);
             } else {
@@ -31,11 +31,11 @@ _user.get = (data, callback) => {
             }
         });
     } else {
-        callback(400, {message: 'Invalid email number'});
+        callback(400, {message: 'Invalid Email number'});
     }
 };
 
-_user.put = (data, callback) => {
+_token.put = (data, callback) => {
     //create new user instance
     let user = new User(data);
 
@@ -55,15 +55,15 @@ _user.put = (data, callback) => {
     }
 };
 
-_user.post = (data, callback) => {
+_token.post = (data, callback) => {
     //check if number suit requirements
-    let isEmailValid = validators.isValidEmail(data.email);
+    let isEmailValid = validators.isValidEmail(data.Email);
 
     if(isEmailValid){
         //check if user already exist
-        User.getByEmail(data.email, (err, message) => {
+        User.getByEmail(data.Email, (err, message) => {
             if(!err){
-                //if the no error - user with that email already exist
+                //if the no error - user with that Email already exist
                 callback(400, {message: message});
             } else {
                 //user doesn't exist so create new one
@@ -79,17 +79,17 @@ _user.post = (data, callback) => {
             }
         });
     } else {
-        callback(400, {message: 'Invalid email number'});
+        callback(400, {message: 'Invalid Email number'});
     }
 };
 
-_user.delete = (data, callback) => {//should take a param
+_token.delete = (data, callback) => {//should take a param
     //check if number suit requirements
-    let isEmailValid = validators.isValidEmail(data.email);
+    let isEmailValid = validators.isValidEmail(data.Email);
 
     if(isEmailValid){
         //check if user exist
-        User.getByEmail(data.email, (err, message, user) => {
+        User.getByEmail(data.Email, (err, message, user) => {
             if(!err){
                 //if the no error, we can delete this user
                 user.delete((err, message) => {
@@ -101,8 +101,8 @@ _user.delete = (data, callback) => {//should take a param
             }
         });
     } else {
-        callback(400, {message: 'Invalid email number'});
+        callback(400, {message: 'Invalid Email number'});
     }
 };
 
-module.exports = user;
+module.exports = token;
