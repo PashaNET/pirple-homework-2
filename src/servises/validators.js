@@ -5,8 +5,8 @@ validators.isValidString = (str) => {
     return typeof(str) == 'string' && str.trim().length > 0;
 };
 
-validators.isValidPhoneNumber = (number) => {
-    return typeof(str) == 'string' && str.trim().length > 10;
+validators.isValidPhoneNumber = (str) => {
+    return typeof(str) == 'string' && str.trim().length >= 10;
 };
 
 validators.isValidAgreement = (agreement) => {

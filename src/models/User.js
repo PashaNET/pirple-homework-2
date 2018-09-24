@@ -8,12 +8,15 @@ const validators = require('../servises/validators'),
 
 class User {
     constructor(data = {}){
-        this.collectionName = 'user';
-        
         this.firstName = data.firstName;
         this.lastName = data.lastName;
         this.phone = data.phone;
         this.agreement = data.agreement;
+        //password
+    }
+
+    static getCollectionName() {
+        return 'user';
     }
 
     /**
@@ -22,20 +25,25 @@ class User {
     isValid(){
         let isFirstNameValid = validators.isValidString(this.firstName);
         let isLastNameValid = validators.isValidString(this.lastName);
-        let isPhoneValid = validators.isValidString(this.phone);
         let isAgreementValid = validators.isValidAgreement(this.agreement);
+        //password
 
-        return isFirstNameValid && isLastNameValid && isPhoneValid && isAgreementValid;
+        return isFirstNameValid && isLastNameValid && isAgreementValid;
     }
 
     /**
-     *  Method to check if user exist
+     *  Get user from db by his phone number
      * @param {*} callback 
      */
-    alreadyExist(callback){
-        database.read(this.collectionName, this.phone, (response) => {
-            //user file exist if error object contains nothing
-            callback(response.err, response.message);
+    static getByPhoneNumber(phone, callback){
+        database.read(User.getCollectionName(), phone, (response) => {
+            let user = {};
+            if(!response.err){
+                let data = JSON.parse(response.data)
+                user = new User(data);
+            }
+
+            callback(response.err, response.message, user);
         });
     }
 
@@ -44,16 +52,16 @@ class User {
      * @param {*} callback 
      */
     create(callback){
-        database.create(this.collectionName, this.phone, this, (response) => {
+        database.create(User.getCollectionName(), this.phone, this, (response) => {
             //return response to controller 
             callback(response.err, response.message);
         });
     }
 
     update(callback){
-        database.update(this.collectionName, this.phone, this, (response) => {
+        database.update(User.getCollectionName(), this.phone, this, (response) => {
             //return response to controller 
-            callback(response.err, response.message);
+            callback(response.err, response.message, response.data);
         });
     }
 
@@ -62,7 +70,7 @@ class User {
      * @param {*} callback 
      */
     delete(callback){
-        database.delete(this.collectionName, this.phone, (response) => {
+        database.delete(User.getCollectionName(), this.phone, (response) => {
             //return response to controller 
             callback(response.err, response.message);
         })

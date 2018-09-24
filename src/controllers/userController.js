@@ -7,11 +7,8 @@ let users = (data, callback) => {
 
     //check if request method allowed for this controller
     if(allowedMethods.indexOf(data.method) > -1) {
-        //create new user instance
-        let user = new User(data.payload);// get user by phone
-
         //get action according to request method
-        _users[data.method](user, callback);
+        _users[data.method](data.payload, callback);
     } else {
         callback(405);
     }
@@ -19,11 +16,29 @@ let users = (data, callback) => {
 
 _users = {};
 
-_users.get = (user, callback) => {
+_users.get = (data, callback) => {
+    //check if number suit requirements
+    let isPhoneValid = validators.isValidPhoneNumber(data.phone);
 
+    if(isPhoneValid){
+        //check if user exist
+        User.getByPhoneNumber(data.phone, (err, message, user) => {
+            if(!err){
+                callback(200, user);
+            } else {
+                //such user doesn't exist 
+                callback(400, {message: message});
+            }
+        });
+    } else {
+        callback(400, {message: 'Invalid phone number'});
+    }
 };
 
-_users.put = (user, callback) => {
+_users.put = (data, callback) => {
+    //create new user instance
+    let user = new User(data);
+
     //check if income data valid
     if(user.isValid()){
         //check if user already exist
@@ -40,39 +55,54 @@ _users.put = (user, callback) => {
     }
 };
 
-_users.post = (user, callback) => {
-    //check if income data valid
-    if(user.isValid()){
+_users.post = (data, callback) => {
+    //check if number suit requirements
+    let isPhoneValid = validators.isValidPhoneNumber(data.phone);
+
+    if(isPhoneValid){
         //check if user already exist
-        user.alreadyExist((err, message) => {
+        User.getByPhoneNumber(data.phone, (err, message) => {
             if(!err){
                 //if the no error - user with that phone already exist
                 callback(400, {message: message});
             } else {
                 //user doesn't exist so create new one
-                user.create((err, message) => {
-                    callback(200, {message: message});
-                });
+                let user = new User(data);
+                //check if income data valid
+                if(user.isValid()){
+                    user.create((err, message) => {
+                        callback(200, {message: message});
+                    });
+                } else {
+                    callback(400, {message: 'Missing required params or user already exist'});
+                }
             }
         });
     } else {
-        callback(400, {message: 'Missing required params or user already exist'});
+        callback(400, {message: 'Invalid phone number'});
     }
 };
 
-_users.delete = (user, callback) => {//should take a param
-    //check if user already exist
-    user.alreadyExist((err, message) => {
-        if(!err){
-            //if the no error, we can delete this user
-            user.delete((err, message) => {
-                callback(400, {message: message});
-            });
-        } else {
-            //such user doesn't exist 
-            callback(200, {message: message});
-        }
-    });
+_users.delete = (data, callback) => {//should take a param
+    //check if number suit requirements
+    let isPhoneValid = validators.isValidPhoneNumber(data.phone);
+
+    if(isPhoneValid){
+        //check if user exist
+        User.getByPhoneNumber(data.phone, (err, message, user) => {
+            if(!err){
+                //if the no error, we can delete this user
+                user.delete((err, message) => {
+                    callback(400, {message: message});
+                });
+            } else {
+                //such user doesn't exist 
+                callback(200, {message: message});
+            }
+        });
+    } else {
+        callback(400, {message: 'Invalid phone number'});
+    }
 };
 
 module.exports = users;
