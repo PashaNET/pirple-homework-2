@@ -45,7 +45,7 @@ _users.put = (data, callback) => {
         user.update((err, message) => {
             if(!err){
                 //if the no error user successfully updated
-                callback(100, {message: message});
+                callback(200, {message: message});
             } else {
                 callback(400, {message: message});
             }

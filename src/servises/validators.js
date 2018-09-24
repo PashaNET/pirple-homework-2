@@ -13,4 +13,9 @@ validators.isValidAgreement = (agreement) => {
     return typeof(agreement) == 'boolean' && agreement == true;
 };
 
+validators.isValidPassword = (password) => {
+    //TODO improvment - add regex, pass should contain digit, upper case ..
+    return typeof(password) == 'string' && password.trim().length >= 6;
+}
+
 module.exports = validators;

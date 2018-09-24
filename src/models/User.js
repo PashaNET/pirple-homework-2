@@ -3,7 +3,8 @@
  */
 
 //Dependencies
-const validators = require('../servises/validators'),
+const helpers = require('../servises/helpers'),
+      validators = require('../servises/validators'),
       database = require('../servises/database');  
 
 class User {
@@ -12,7 +13,7 @@ class User {
         this.lastName = data.lastName;
         this.phone = data.phone;
         this.agreement = data.agreement;
-        //password
+        this.password = data.password;
     }
 
     static getCollectionName() {
@@ -26,9 +27,9 @@ class User {
         let isFirstNameValid = validators.isValidString(this.firstName);
         let isLastNameValid = validators.isValidString(this.lastName);
         let isAgreementValid = validators.isValidAgreement(this.agreement);
-        //password
+        let isPasswordValid = validators.isValidPassword(this.password);
 
-        return isFirstNameValid && isLastNameValid && isAgreementValid;
+        return isFirstNameValid && isLastNameValid && isAgreementValid && isPasswordValid;
     }
 
     /**
@@ -39,7 +40,8 @@ class User {
         database.read(User.getCollectionName(), phone, (response) => {
             let user = {};
             if(!response.err){
-                let data = JSON.parse(response.data)
+                let data = JSON.parse(response.data);
+                delete data.password;
                 user = new User(data);
             }
 
@@ -52,6 +54,10 @@ class User {
      * @param {*} callback 
      */
     create(callback){
+        //create hash for password
+        this.password = helpers.hash(this.password);
+        
+        //create file for new user
         database.create(User.getCollectionName(), this.phone, this, (response) => {
             //return response to controller 
             callback(response.err, response.message);
