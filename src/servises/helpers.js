@@ -44,8 +44,9 @@ helpers.getRandomString = (lenght = 10) => {
           possibleCharactersLenght = possibleCharacters.length; 
 
     let str = '';
-    for(let i = 0; i > lenght; i++){
-        let randomChar = possibleCharacters.charAt(Math.random() * possibleCharactersLenght);
+    for(let i = 0; i < lenght; i++){
+        let randomNumberInRange = Math.random() * possibleCharactersLenght;
+        let randomChar = possibleCharacters.charAt(Math.floor(randomNumberInRange));
         str += randomChar;
     }
 

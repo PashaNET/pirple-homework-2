@@ -1,6 +1,7 @@
 //Dependencies
 const validators = require('../servises/validators'),
       helpers = require('../servises/helpers'),
+      User = require('../models/User'),
       Token = require('../models/Token');
 
 let token = (data, callback) => {
@@ -18,12 +19,12 @@ let token = (data, callback) => {
 _token = {};
 
 _token.get = (data, callback) => {
-    //check if number suit requirements
-    let isEmailValid = validators.isValidEmail(data.Email);
+    //check if icome parameter suit requirements
+    let isIdValid = validators.isValidString(data.id);
 
-    if(isEmailValid){
-        //check if token exist
-        Token.getByEmail(data.Email, (err, message, token) => {
+    if(isIdValid){
+        //get token 
+        Token.getById(data.Email, (err, message, token) => {
             if(!err){
                 callback(200, token);
             } else {
@@ -32,7 +33,7 @@ _token.get = (data, callback) => {
             }
         });
     } else {
-        callback(400, {message: 'Invalid Email number'});
+        callback(400, {message: 'Invalid id'});
     }
 };
 
@@ -63,10 +64,13 @@ _token.post = (data, callback) => {
 
     if(isEmailValid && isPasswordValid){
         //get token by email
-        Token.getByEmail(data.email, (err, message, tokenData) => {
-            if(!err && tokenData){
-                if(helpers.hash(data.password) == tokenData.password){
-                    let token = new Token(tokenData.email);
+        User.getByEmail(data.email, (err, message, userData) => {
+            if(!err && userData){
+                if(helpers.hash(data.password) == userData.password){
+                    //create token instance 
+                    let token = new Token(userData.email);
+
+                    //write instanse to file 
                     token.create((err) => {
                         if(!err){
                             callback(200, token);
@@ -75,7 +79,7 @@ _token.post = (data, callback) => {
                         }
                     });
                 } else {
-                    callback(400, {message: 'Incorrect password or such token email doesn\'t exist'});
+                    callback(400, {message: 'Incorrect password or user with that email doesn\'t exist'});
                 }
             } else {
                 callback(400, {message: 'No such token'});

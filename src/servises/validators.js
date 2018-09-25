@@ -11,7 +11,7 @@ validators.isValidPhoneNumber = (str) => {
 
 validators.isValidEmail = (str) => {
     //TODO regexp
-    return typeof(str) == 'string' && str.trim().length >= 20;
+    return typeof(str) == 'string';
 };
 
 validators.isValidAgreement = (agreement) => {

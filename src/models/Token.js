@@ -4,14 +4,13 @@
 
 //Dependencies
 const helpers = require('../servises/helpers'),
-      validators = require('../servises/validators'),
       database = require('../servises/database');  
 
 class Token {
-    constructor(data = {}){
-        this.email = data.email;
+    constructor(email){
+        this.email = email;
         this.tokenId = helpers.getRandomString(20);
-        this.expires = Data.now() + 1000 * 60 * 60;
+        this.expires = Date.now() + 1000 * 60 * 60;
     }
 
     static getCollectionName() {
@@ -22,8 +21,8 @@ class Token {
      *  Get token from db by email number
      * @param {*} callback 
      */
-    static getByEmail(email, callback){
-        database.read(Token.getCollectionName(), email, (response) => {
+    static getById(id, callback){
+        database.read(Token.getCollectionName(), id, (response) => {
             let token = {};
             if(!response.err){
                 let data = helpers.safeJsonParse(response.data);
@@ -41,7 +40,7 @@ class Token {
      */
     create(callback){
         //create file for new token
-        database.create(Token.getCollectionName(), this.email, this, (response) => {
+        database.create(Token.getCollectionName(), this.tokenId, this, (response) => {
             //return response to controller 
             callback(response.err, response.message);
         });

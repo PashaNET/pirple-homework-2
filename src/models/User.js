@@ -41,8 +41,6 @@ class User {
             let user = {};
             if(!response.err){
                 let data = helpers.safeJsonParse(response.data);
-                
-                delete data.password;
                 user = new User(data);
             }
 

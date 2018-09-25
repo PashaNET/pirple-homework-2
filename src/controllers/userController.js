@@ -24,6 +24,8 @@ _user.get = (data, callback) => {
         //check if user exist
         User.getByEmail(data.email, (err, message, user) => {
             if(!err){
+                //remove password before returning
+                delete data.password;
                 callback(200, user);
             } else {
                 //such user doesn't exist 
@@ -79,7 +81,7 @@ _user.post = (data, callback) => {
             }
         });
     } else {
-        callback(400, {message: 'Invalid email number'});
+        callback(400, {message: 'Invalid email'});
     }
 };
 
