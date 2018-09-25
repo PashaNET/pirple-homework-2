@@ -9,7 +9,9 @@ const helpers = require('../servises/helpers'),
 
 class Token {
     constructor(data = {}){
-
+        this.email = data.email;
+        this.tokenId = helpers.getRandomString(20);
+        this.expires = Data.now() + 1000 * 60 * 60;
     }
 
     static getCollectionName() {
@@ -24,7 +26,7 @@ class Token {
         database.read(Token.getCollectionName(), email, (response) => {
             let token = {};
             if(!response.err){
-                let data = JSON.parse(response.data);//add to helpers save Json
+                let data = helpers.safeJsonParse(response.data);
                 delete data.password;
                 token = new Token(data);
             }
@@ -38,9 +40,6 @@ class Token {
      * @param {*} callback 
      */
     create(callback){
-        //create hash for password
-        this.password = helpers.hash(this.password);
-        
         //create file for new token
         database.create(Token.getCollectionName(), this.email, this, (response) => {
             //return response to controller 
@@ -48,6 +47,10 @@ class Token {
         });
     }
 
+    /**
+     * Update token with new data
+     * @param {*} callback 
+     */
     update(callback){
         database.update(Token.getCollectionName(), this.email, this, (response) => {
             //return response to controller 

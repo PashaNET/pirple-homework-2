@@ -22,12 +22,12 @@ _token.get = (data, callback) => {
     let isEmailValid = validators.isValidEmail(data.Email);
 
     if(isEmailValid){
-        //check if user exist
-        Token.getByEmail(data.Email, (err, message, user) => {
+        //check if token exist
+        Token.getByEmail(data.Email, (err, message, token) => {
             if(!err){
-                callback(200, user);
+                callback(200, token);
             } else {
-                //such user doesn't exist 
+                //such token doesn't exist 
                 callback(400, {message: message});
             }
         });
@@ -37,22 +37,22 @@ _token.get = (data, callback) => {
 };
 
 _token.put = (data, callback) => {
-    //create new user instance
-    let user = new Token(data);
+    //create new token instance
+    let token = new Token(data);
 
     //check if income data valid
-    if(user.isValid()){
-        //check if user already exist
-        user.update((err, message) => {
+    if(token.isValid()){
+        //check if token already exist
+        token.update((err, message) => {
             if(!err){
-                //if the no error user successfully updated
+                //if the no error token successfully updated
                 callback(200, {message: message});
             } else {
                 callback(400, {message: message});
             }
         });
     } else {
-        callback(400, {message: 'Missing required params or user already exist'});
+        callback(400, {message: 'Missed required params'});
     }
 };
 
@@ -62,16 +62,23 @@ _token.post = (data, callback) => {
     let isPasswordValid = validators.isValidPassword(data.password);
 
     if(isEmailValid && isPasswordValid){
-        //get user by email
-        Token.getByEmail(data.Email, (err, message, userData) => {
-            if(!err && userData){
-                if(helpers.hash(data.password) == userData.password){
-                    
+        //get token by email
+        Token.getByEmail(data.email, (err, message, tokenData) => {
+            if(!err && tokenData){
+                if(helpers.hash(data.password) == tokenData.password){
+                    let token = new Token(tokenData.email);
+                    token.create((err) => {
+                        if(!err){
+                            callback(200, token);
+                        } else {
+                            callback(400, {message: 'Can\'t create token file'});
+                        }
+                    });
                 } else {
-                    callback(400, {message: message});
+                    callback(400, {message: 'Incorrect password or such token email doesn\'t exist'});
                 }
             } else {
-                callback(400, {message: 'No such user'});
+                callback(400, {message: 'No such token'});
             }
         });
     } else {
@@ -84,15 +91,15 @@ _token.delete = (data, callback) => {//should take a param
     let isEmailValid = validators.isValidEmail(data.Email);
 
     if(isEmailValid){
-        //check if user exist
-        Token.getByEmail(data.Email, (err, message, user) => {
+        //check if token exist
+        Token.getByEmail(data.email, (err, message, token) => {
             if(!err){
-                //if the no error, we can delete this user
-                user.delete((err, message) => {
+                //if the no error, we can delete this token
+                token.delete((err, message) => {
                     callback(400, {message: message});
                 });
             } else {
-                //such user doesn't exist 
+                //such token doesn't exist 
                 callback(200, {message: message});
             }
         });

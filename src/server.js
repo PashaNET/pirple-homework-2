@@ -18,7 +18,7 @@ function unifiedServer(req, res){
       const chosenHandler = typeof(routers[path]) !== 'undefined' ? routers[path] : routers['notFound'];
       //define params for handler
       let data = {
-        payload: JSON.parse(buffer), //TODO add try - catch
+        payload: helpers.safeJsonParse(buffer),
         method: method
       };
       chosenHandler(data, (statusCode, data) => {

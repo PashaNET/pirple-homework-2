@@ -40,7 +40,7 @@ class User {
         database.read(User.getCollectionName(), email, (response) => {
             let user = {};
             if(!response.err){
-                let data = JSON.parse(response.data);//add to helpers save Json
+                let data = helpers.safeJsonParse(response.data);
                 
                 delete data.password;
                 user = new User(data);

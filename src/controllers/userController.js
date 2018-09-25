@@ -51,7 +51,7 @@ _user.put = (data, callback) => {
             }
         });
     } else {
-        callback(400, {message: 'Missing required params or user already exist'});
+        callback(400, {message: 'Missed required params'});
     }
 };
 
