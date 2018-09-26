@@ -23,8 +23,8 @@ _token.get = (data, callback) => {
     let isIdValid = validators.isValidString(data.id);
 
     if(isIdValid){
-        //get token 
-        Token.getById(data.Email, (err, message, token) => {
+        //read token by id
+        Token.getById(data.id, (err, message, token) => {
             if(!err){
                 callback(200, token);
             } else {
@@ -34,26 +34,6 @@ _token.get = (data, callback) => {
         });
     } else {
         callback(400, {message: 'Invalid id'});
-    }
-};
-
-_token.put = (data, callback) => {
-    //create new token instance
-    let token = new Token(data);
-
-    //check if income data valid
-    if(token.isValid()){
-        //check if token already exist
-        token.update((err, message) => {
-            if(!err){
-                //if the no error token successfully updated
-                callback(200, {message: message});
-            } else {
-                callback(400, {message: message});
-            }
-        });
-    } else {
-        callback(400, {message: 'Missed required params'});
     }
 };
 
@@ -68,7 +48,9 @@ _token.post = (data, callback) => {
             if(!err && userData){
                 if(helpers.hash(data.password) == userData.password){
                     //create token instance 
-                    let token = new Token(userData.email);
+                    let token = new Token({email: userData.email});
+                    token.generateId();
+                    token.setExpireTime();
 
                     //write instanse to file 
                     token.create((err) => {
@@ -90,25 +72,50 @@ _token.post = (data, callback) => {
     }
 };
 
-_token.delete = (data, callback) => {//should take a param
-    //check if number suit requirements
-    let isEmailValid = validators.isValidEmail(data.Email);
+_token.put = (data, callback) => {//TODO debug issue with callback
+    //check if icome parameter suit requirements
+    let isIdValid = validators.isValidString(data.id);
+    let isExtendParamValid = validators.isValidBoolen(data.extend);
 
-    if(isEmailValid){
-        //check if token exist
-        Token.getByEmail(data.email, (err, message, token) => {
+    if(isIdValid && isExtendParamValid){
+        //read token by id
+        Token.getById(data.id, (err, message, token) => {
             if(!err){
-                //if the no error, we can delete this token
-                token.delete((err, message) => {
-                    callback(400, {message: message});
+                token.update((err, message) => {
+                    if(!err){
+                        //if the no error token successfully updated
+                        callback(200, token);
+                    } else {
+                        callback(400, {message: message});
+                    }
                 });
             } else {
                 //such token doesn't exist 
-                callback(200, {message: message});
+                callback(400, {message: message});
             }
         });
     } else {
-        callback(400, {message: 'Invalid Email number'});
+        callback(400, {message: 'Missed required params'});
+    }
+};
+
+_token.delete = (data, callback) => {
+    //check if icome parameter suit requirements
+    let isIdValid = validators.isValidString(data.id);
+
+    if(isIdValid){
+        //read token by id
+        Token.getById(data.id, (err, message, token) => {
+            if(!err){
+                //delete token 
+                callback(200, 'Access token has been deleted');
+            } else {
+                //such token doesn't exist 
+                callback(400, {message: message});
+            }
+        });
+    } else {
+        callback(400, {message: 'Invalid id'});
     }
 };
 

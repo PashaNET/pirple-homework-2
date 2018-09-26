@@ -14,8 +14,8 @@ validators.isValidEmail = (str) => {
     return typeof(str) == 'string';
 };
 
-validators.isValidAgreement = (agreement) => {
-    return typeof(agreement) == 'boolean' && agreement == true;
+validators.isValidBoolen = (booleanValue) => {
+    return typeof(booleanValue) == 'boolean' && booleanValue == true;
 };
 
 validators.isValidPassword = (password) => {

@@ -1,8 +1,10 @@
+
 //Dependencies
 const StringDecoder = require('string_decoder').StringDecoder,
       url = require('url'),
       routers = require('./routers'),
-      helpers = require('./servises/helpers');
+      helpers = require('./servises/helpers'),
+      querystring = require('querystring');
 
 function unifiedServer(req, res){
     let parsedUrl = url.parse(req.url, true),
@@ -16,12 +18,18 @@ function unifiedServer(req, res){
     });
     
     req.on('end', () => {
-      const chosenHandler = typeof(routers[path]) !== 'undefined' ? routers[path] : routers['notFound'];
+      //get payloadData depending on method
+      let payload = (method == 'get') ? parsedUrl.query : helpers.safeJsonParse(buffer);
+      
       //define params for handler
       let data = {
-        payload: helpers.safeJsonParse(buffer),
+        payload: payload,
         method: method
       };
+      
+      //choose controller from routers object
+      const chosenHandler = typeof(routers[path]) !== 'undefined' ? routers[path] : routers['notFound'];
+      
       chosenHandler(data, (statusCode, data) => {
         statusCode = typeof(statusCode) == 'number' ? statusCode : 200;//TODO create constants with codes
         data = typeof(data) == 'object' ? data : {};

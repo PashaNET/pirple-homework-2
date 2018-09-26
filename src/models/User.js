@@ -26,7 +26,7 @@ class User {
     isValid(){
         let isFirstNameValid = validators.isValidString(this.firstName);
         let isLastNameValid = validators.isValidString(this.lastName);
-        let isAgreementValid = validators.isValidAgreement(this.agreement);
+        let isAgreementValid = validators.isValidBoolen(this.agreement);
         let isPasswordValid = validators.isValidPassword(this.password);
 
         return isFirstNameValid && isLastNameValid && isAgreementValid && isPasswordValid;

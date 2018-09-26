@@ -6,7 +6,7 @@ const pingController = require('./controllers/pingController'),
 
 let routers = {
   ping: pingController,
-  notFound: null,
+  notFound: null, //TODO create controller
   token: tokenController,
   user: userController 
 }
