@@ -37,26 +37,6 @@ _user.get = (data, callback) => {
     }
 };
 
-_user.put = (data, callback) => {
-    //create new user instance
-    let user = new User(data);
-
-    //check if income data valid
-    if(user.isValid()){
-        //check if user already exist
-        user.update((err, message) => {
-            if(!err){
-                //if the no error user successfully updated
-                callback(200, {message: message});
-            } else {
-                callback(400, {message: message});
-            }
-        });
-    } else {
-        callback(400, {message: 'Missed required params'});
-    }
-};
-
 _user.post = (data, callback) => {
     //check if number suit requirements
     let isEmailValid = validators.isValidEmail(data.email);
@@ -82,6 +62,26 @@ _user.post = (data, callback) => {
         });
     } else {
         callback(400, {message: 'Invalid email'});
+    }
+};
+
+_user.put = (data, callback) => {
+    //create new user instance
+    let user = new User(data);
+
+    //check if income data valid
+    if(user.isValid()){
+        //check if user already exist
+        user.update((err, message) => {
+            if(!err){
+                //if the no error user successfully updated
+                callback(200, {message: message});
+            } else {
+                callback(400, {message: message});
+            }
+        });
+    } else {
+        callback(400, {message: 'Missed required params'});
     }
 };
 

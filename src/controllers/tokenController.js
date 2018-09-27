@@ -72,7 +72,7 @@ _token.post = (data, callback) => {
     }
 };
 
-_token.put = (data, callback) => {//TODO debug issue with callback
+_token.put = (data, callback) => {
     //check if icome parameter suit requirements
     let isIdValid = validators.isValidString(data.id);
     let isExtendParamValid = validators.isValidBoolen(data.extend);
@@ -108,7 +108,13 @@ _token.delete = (data, callback) => {
         Token.getById(data.id, (err, message, token) => {
             if(!err){
                 //delete token 
-                callback(200, 'Access token has been deleted');
+                token.delete((err) => {
+                    if(!err){
+                        callback(200, {message: 'Access token has been deleted'});
+                    } else {
+                        callback(400, {message: 'Can\'t delete token'});
+                    }
+                })
             } else {
                 //such token doesn't exist 
                 callback(400, {message: message});

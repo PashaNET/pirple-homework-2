@@ -69,8 +69,8 @@ class Token {
      * @param {*} callback 
      */
     update(callback){
-        //check if token still valid
-        if(this.expires < Date.now()){
+        //if token more that current Date that it still valid
+        if(this.expires > Date.now()){
             //update expire time on one hour
             this.setExpireTime();
         } else {
@@ -79,19 +79,42 @@ class Token {
         
         database.update(Token.getCollectionName(), this.tokenId, this, (response) => {
             //return response to controller 
-            callback(response.err, response.message, response.data);
+            callback(response.err, response.message);
         });
     }
 
     /**
-     * Delete token by his number
+     * Delete token by his id
      * @param {*} callback 
      */
     delete(callback){
-        database.delete(Token.getCollectionName(), this.email, (response) => {
+        database.delete(Token.getCollectionName(), this.tokenId, (response) => {
             //return response to controller 
             callback(response.err, response.message);
         })
+    }
+
+    /**
+     * Validate token for specific user
+     * @param {*} tokenId 
+     * @param {*} userEmail 
+     * @param {*} callback 
+     */
+    verifyToken(tokenId, userEmail, callback){
+        Token.getById(Token.getCollectionName(), tokenId, (response) => {
+            if (!response.err){
+                let tokenData = helpers.safeJsonParse(response.data);
+                token = new Token(tokenData);
+
+                if(token.email == userEmail && token.expires > Date.now()){
+                    callback(true);
+                } else {
+                    callback(false, 'There is no token for such user or it is expired');
+                }
+            } else {
+                callback(false, response.message);
+            }
+        });
     }
 }
 
