@@ -1,14 +1,35 @@
 //Dependencies
 const validators = require('../servises/validators'),
-      User = require('../models/User');
+      User = require('../models/User'),
+      Token = require('../models/Token');
 
 let user = (data, callback) => {
-    let allowedMethods = ['get', 'put', 'post', 'delete'];
+    //permitted methods for controller
+    const allowedMethods = {
+        get: { needVerification: true }, 
+        put: { needVerification: true }, 
+        post: { needVerification: false }, 
+        delete:{ needVerification: true }
+    };
 
     //check if request method allowed for this controller
-    if(allowedMethods.indexOf(data.method) > -1) {
-        //get action according to request method
-        _user[data.method](data.payload, callback);
+    if(allowedMethods[data.method] !== undefined) {
+        //before perform operation, check that if method require logged user
+        if(allowedMethods[data.method].needVerification){
+            //check that user logged in 
+            Token.verify(data.headers.token, data.payload.email, (tokenIsValid) => {
+                if(tokenIsValid){
+                    //get action according to request method
+                    _user[data.method](data.payload, callback);
+                } else {
+                    callback(403);
+                }
+            });
+        } else {
+            //current method doen't need token verification
+            //get action according to request method
+            _user[data.method](data.payload, callback);
+        }
     } else {
         callback(405);
     }

@@ -13,11 +13,11 @@ const StringDecoder = require('string_decoder').StringDecoder,
       config = require('./config'),
       routers = require('./routers'),
       helpers = require('./servises/helpers');
-      
+
 //Container for server methods
 let server = {};
 
-function unifiedServer(req, res){
+server.unifiedServer = (req, res) => {
     let buffer = '',
         parsedUrl = url.parse(req.url, true),
         requestedPathname = parsedUrl.pathname.replace(/^\/+|\/+$/g, ''),
@@ -35,13 +35,17 @@ function unifiedServer(req, res){
       //define params for handler
       let data = {
         payload: payload,
-        method: method
+        method: method,
+        headers: req.headers
       };
       
       //choose controller from routers object
       const chosenHandler = typeof(routers[requestedPathname]) !== 'undefined' ? routers[requestedPathname] : routers['notFound'];
       
       //TODO add to each handler token verification
+      //get token from header
+      //need email - how to get email? 
+      
       chosenHandler(data, (statusCode, data) => {
         statusCode = typeof(statusCode) == 'number' ? statusCode : 200;//TODO create constants with codes
         data = typeof(data) == 'object' ? data : {};//TODO add method to helpers
@@ -54,10 +58,10 @@ function unifiedServer(req, res){
     });
   }
 
-  function initHttpServer(){
+  server.initHttpServer = () => {
     //Initialize http server
     server.httpServer = http.createServer((req, res) => {
-      unifiedServer(req, res);
+      server.unifiedServer(req, res);
     });
 
     //Set http-server listen to port
@@ -66,7 +70,7 @@ function unifiedServer(req, res){
     });
   }
 
-  function initHttpsServer(){
+  server.initHttpsServer = () => {
     //Define pathes to 'key' and 'cert' for https-server
     let httpsServerParams = {
       key : fs.readFileSync(path.join(__dirname, './../https/key.pem')),
@@ -75,7 +79,7 @@ function unifiedServer(req, res){
 
     //Initialize https server
     server.httpsServer = https.createServer(httpsServerParams, (req, res) => {
-      unifiedServer(req, res);
+      server.unifiedServer(req, res);
     });
 
     //Set https-server listen to port
@@ -85,8 +89,8 @@ function unifiedServer(req, res){
   }
 
   server.init = () => {
-    initHttpServer();
-    initHttpsServer();
+    server.initHttpServer();
+    server.initHttpsServer();
   }
 
   module.exports = server;

@@ -38,6 +38,27 @@ class Token {
     }
 
     /**
+     * Validate token for specific user
+     * @param {*} tokenId 
+     * @param {*} userEmail 
+     * @param {*} callback 
+     */
+    static verify(tokenId, userEmail, callback){
+        Token.getById(tokenId, (err, message, token) => {
+            if (!err){
+                //
+                if(token.email == userEmail && token.expires > Date.now()){
+                    callback(true);
+                } else {
+                    callback(false, 'There is no token for such user or it is expired');
+                }
+            } else {
+                callback(false, message);
+            }
+        });
+    }
+
+    /**
      * 
      */
     generateId(){
@@ -92,29 +113,6 @@ class Token {
             //return response to controller 
             callback(response.err, response.message);
         })
-    }
-
-    /**
-     * Validate token for specific user
-     * @param {*} tokenId 
-     * @param {*} userEmail 
-     * @param {*} callback 
-     */
-    verifyToken(tokenId, userEmail, callback){
-        Token.getById(Token.getCollectionName(), tokenId, (response) => {
-            if (!response.err){
-                let tokenData = helpers.safeJsonParse(response.data);
-                token = new Token(tokenData);
-
-                if(token.email == userEmail && token.expires > Date.now()){
-                    callback(true);
-                } else {
-                    callback(false, 'There is no token for such user or it is expired');
-                }
-            } else {
-                callback(false, response.message);
-            }
-        });
     }
 }
 
