@@ -1,16 +1,28 @@
 
+/**
+ * Server 
+ */
+
 //Dependencies
 const StringDecoder = require('string_decoder').StringDecoder,
+      path = require('path'),
       url = require('url'),
+      http = require('http'),
+      https = require('https'),
+      fs = require('fs'),
+      config = require('./config'),
       routers = require('./routers'),
       helpers = require('./servises/helpers');
+      
+//Container for server methods
+let server = {};
 
 function unifiedServer(req, res){
-    let parsedUrl = url.parse(req.url, true),
-        path = parsedUrl.pathname.replace(/^\/+|\/+$/g, ''),
+    let buffer = '',
+        parsedUrl = url.parse(req.url, true),
+        requestedPathname = parsedUrl.pathname.replace(/^\/+|\/+$/g, ''),
         method = req.method.toLocaleLowerCase(),
-        decoder = new StringDecoder('utf-8'),
-        buffer = '';
+        decoder = new StringDecoder('utf-8');
 
     req.on('data', (data) => {
       buffer += decoder.write(data);
@@ -27,7 +39,7 @@ function unifiedServer(req, res){
       };
       
       //choose controller from routers object
-      const chosenHandler = typeof(routers[path]) !== 'undefined' ? routers[path] : routers['notFound'];
+      const chosenHandler = typeof(routers[requestedPathname]) !== 'undefined' ? routers[requestedPathname] : routers['notFound'];
       
       //TODO add to each handler token verification
       chosenHandler(data, (statusCode, data) => {
@@ -42,5 +54,39 @@ function unifiedServer(req, res){
     });
   }
 
+  function initHttpServer(){
+    //Initialize http server
+    server.httpServer = http.createServer((req, res) => {
+      unifiedServer(req, res);
+    });
 
-module.exports = unifiedServer;
+    //Set http-server listen to port
+    server.httpServer.listen(config.httpPort, () => {
+      console.log('Server started on port ' + config.httpPort + ' with ' + config.envName + ' evn' );
+    });
+  }
+
+  function initHttpsServer(){
+    //Define pathes to 'key' and 'cert' for https-server
+    let httpsServerParams = {
+      key : fs.readFileSync(path.join(__dirname, './../https/key.pem')),
+      cert : fs.readFileSync(path.join(__dirname, './../https/cert.pem'))
+    }
+
+    //Initialize https server
+    server.httpsServer = https.createServer(httpsServerParams, (req, res) => {
+      unifiedServer(req, res);
+    });
+
+    //Set https-server listen to port
+    server.httpsServer.listen(config.httpsPort, () => {
+      console.log('Server started on port ' + config.httpsPort + ' with ' + config.envName + ' evn' );
+    });
+  }
+
+  server.init = () => {
+    initHttpServer();
+    initHttpsServer();
+  }
+
+  module.exports = server;
