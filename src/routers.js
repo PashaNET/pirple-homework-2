@@ -8,7 +8,8 @@ let routers = {
   ping: pingController,
   notFound: null, //TODO create controller
   token: tokenController,
-  user: userController 
+  user: userController,
+  menu: menuController 
 }
 
 module.exports = routers;

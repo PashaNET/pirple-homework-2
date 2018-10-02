@@ -1,5 +1,5 @@
 /**
- * User class
+ * Order class
  */
 
 //Dependencies
@@ -7,7 +7,7 @@ const helpers = require('../servises/helpers'),
       validators = require('../servises/validators'),
       database = require('../servises/database');  
 
-class User {
+class Order {
     constructor(data = {}){
         this.firstName = data.firstName;
         this.lastName = data.lastName;
@@ -83,4 +83,4 @@ class User {
     }
 }
 
-module.exports = User;
+module.exports = Order;

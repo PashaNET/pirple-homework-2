@@ -1,4 +1,4 @@
-
+//TODO rename functions to 'parse
 const validators = {};
 
 validators.isValidString = (str) => {

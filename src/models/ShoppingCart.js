@@ -7,9 +7,9 @@ const helpers = require('../servises/helpers'),
       validators = require('../servises/validators'),
       database = require('../servises/database');  
 
-class User {
+class ShoppingCart {
     constructor(data = {}){
-        this.firstName = data.firstName;
+        this.items = data.items;//MenuItem model ?? 
         this.lastName = data.lastName;
         this.email = data.email;
         this.address = data.address;
@@ -83,4 +83,4 @@ class User {
     }
 }
 
-module.exports = User;
+module.exports = ShoppingCart;
