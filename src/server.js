@@ -44,7 +44,8 @@ server.unifiedServer = (req, res) => {
       
       //TODO add to each handler token verification
       //get token from header
-      //need email - how to get email? 
+      //need email - how to get email? global user object
+      //TODO create authController and keep auth data there 
       
       chosenHandler(data, (statusCode, data) => {
         statusCode = typeof(statusCode) == 'number' ? statusCode : 200;//TODO create constants with codes

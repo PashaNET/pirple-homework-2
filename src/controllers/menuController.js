@@ -5,7 +5,7 @@ const MenuItem = require('../models/MenuItem'),
 let menu = (data, callback) => {
     //permitted methods for controller
     const allowedMethods = {
-        get: { needVerification: true }, 
+        get: { needVerification: false }, 
         put: { needVerification: false }, 
         post: { needVerification: false }, 
         delete:{ needVerification: false }
@@ -16,7 +16,7 @@ let menu = (data, callback) => {
         //before perform operation, check that if method require logged user
         if(allowedMethods[data.method].needVerification){
             //check that user logged in 
-            Token.verify(data.headers.token, data.payload.email, (tokenIsValid) => {//TODO create authController and keep auth data there 
+            Token.verify(data.headers.token, data.payload.email, (tokenIsValid) => {
                 if(tokenIsValid){
                     //get action according to request method
                     _menu[data.method](data.payload, callback);
@@ -40,8 +40,6 @@ _menu.get = (data, callback) => {
     //get all menu items
     MenuItem.getAll((err, message, items) => {
         if(!err){
-            //remove password before returning
-            delete data.password;
             callback(200, items);
         } else {
             callback(400, {message: message});

@@ -2,7 +2,8 @@
 //Dependencies 
 const pingController = require('./controllers/pingController'),
       tokenController = require('./controllers/tokenController'),
-      userController = require('./controllers/userController');
+      userController = require('./controllers/userController'),
+      menuController = require('./controllers/menuController');
 
 let routers = {
   ping: pingController,

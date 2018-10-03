@@ -16,7 +16,8 @@ class MenuItem {
      * @param {*} callback 
      */
     static getAll(callback){
-        database.read(MenuItem.getCollectionName(), 'menu-items', (response) => {
+        //get list of files 
+        database.read(MenuItem.getCollectionName(), 'menu', (response) => {
             let items = {};
             if(!response.err && response.data){
                 items = helpers.safeJsonParse(response.data);
