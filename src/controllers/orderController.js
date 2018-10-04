@@ -17,7 +17,7 @@ let order = (data, callback) => {
         //before perform operation, check that if method require logged order
         if(allowedMethods[data.method].needVerification){
             //check that order logged in 
-            Token.verify(data.headers.token, data.payload.id, (tokenIsValid) => {
+            Token.verify(data.headers.token, data.payload.email, (tokenIsValid) => {
                 if(tokenIsValid){
                     //get action according to request method
                     _order[data.method](data.payload, callback);
@@ -72,10 +72,13 @@ _order.post = (data, callback) => {
                 //check if income data valid
                 if(order.isValid()){
                     order.create((err, message) => {
+                        //sent request to payment system
+                        //sent email to user
+                        
                         callback(200, {message: message});
                     });
                 } else {
-                    callback(400, {message: 'Missing required params or order already exist'});
+                    callback(400, {message: 'Required params is invalid or order already exist'});
                 }
             }
         });

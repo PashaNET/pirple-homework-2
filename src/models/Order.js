@@ -13,6 +13,7 @@ class Order {
         this.shoppingCartId = data.shoppingCartId;
         this.status = data.status;//TODO add Enumeration
         this.description = data.description;
+        this.belongTo = data.belongTo;
     }
 
     /**
@@ -23,7 +24,7 @@ class Order {
     }
 
     /**
-     * Validation of necessary user fields 
+     * Validation of necessary order fields 
      */
     isValid(){
         let isFirstNameValid = validators.isValidString(this.firstName);
