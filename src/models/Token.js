@@ -59,7 +59,7 @@ class Token {
     }
 
     /**
-     * 
+     * Generate unique id for token 
      */
     generateId(){
         this.tokenId = helpers.getRandomString(20);

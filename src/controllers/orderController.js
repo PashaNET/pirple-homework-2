@@ -1,9 +1,9 @@
 //Dependencies
 const validators = require('../servises/validators'),
-      ShoppingCart = require('../models/ShoppingCart'),
+      Order = require('../models/Order'),
       Token = require('../models/Token');
 
-let shoppingCart = (data, callback) => {
+let order = (data, callback) => {
     //permitted methods for controller
     const allowedMethods = {
         get: { needVerification: true }, 
@@ -14,13 +14,13 @@ let shoppingCart = (data, callback) => {
 
     //check if request method allowed for this controller
     if(allowedMethods[data.method] !== undefined) {
-        //before perform operation, check that if method require logged user
+        //before perform operation, check that if method require logged order
         if(allowedMethods[data.method].needVerification){
-            //check that user logged in 
-            Token.verify(data.headers.token, data.payload.email, (tokenIsValid) => {
+            //check that order logged in 
+            Token.verify(data.headers.token, data.payload.id, (tokenIsValid) => {
                 if(tokenIsValid){
                     //get action according to request method
-                    _shoppingCart[data.method](data.payload, callback);
+                    _order[data.method](data.payload, callback);
                 } else {
                     callback(403);
                 }
@@ -28,26 +28,26 @@ let shoppingCart = (data, callback) => {
         } else {
             //current method doen't need token verification
             //get action according to request method
-            _shoppingCart[data.method](data.payload, callback);
+            _order[data.method](data.payload, callback);
         }
     } else {
         callback(405);
     }
 };
 
-_shoppingCart = {};
+_order = {};
 
-_shoppingCart.get = (data, callback) => {
+_order.get = (data, callback) => {
     //check if number suit requirements
-    let isIdValid = validators.isValidEmail(data.id);
+    let isIdValid = validators.isValidid(data.id);
 
     if(isIdValid){
-        //check if user exist
-        ShoppingCart.getById(data.id, (err, message, cart) => {
+        //check if order exist
+        Order.getById(data.id, (err, message, order) => {
             if(!err){
-                callback(200, cart);
+                callback(200, order);
             } else {
-                //such cart doesn't exist 
+                //such order doesn't exist 
                 callback(400, {message: message});
             }
         });
@@ -56,44 +56,44 @@ _shoppingCart.get = (data, callback) => {
     }
 };
 
-_shoppingCart.post = (data, callback) => {
+_order.post = (data, callback) => {
     //check if number suit requirements
-    let isIdValid = validators.isValidEmail(data.id);
+    let isIdValid = validators.isValidid(data.id);
 
     if(isIdValid){
-        //check if user already exist
-        ShoppingCart.getById(data.id, (err, message) => {
+        //check if order already exist
+        Order.getById(data.id, (err, message) => {
             if(!err){
-                //if the no error - cart with that id already exist
+                //if the no error - order with that id already exist
                 callback(400, {message: message});
             } else {
-                //cart doesn't exist so create new one
-                let cart = new ShoppingCart(data);
+                //order doesn't exist so create new one
+                let order = new Order(data);
                 //check if income data valid
-                if(cart.isValid()){
-                    cart.create((err, message) => {
+                if(order.isValid()){
+                    order.create((err, message) => {
                         callback(200, {message: message});
                     });
                 } else {
-                    callback(400, {message: 'Missing required params or cart already exist'});
+                    callback(400, {message: 'Missing required params or order already exist'});
                 }
             }
         });
     } else {
-        callback(400, {message: 'Invalid email'});
+        callback(400, {message: 'Invalid id'});
     }
 };
 
-_shoppingCart.put = (data, callback) => {
-    //create new cart instance
-    let cart = new ShoppingCart(data);
+_order.put = (data, callback) => {
+    //create new order instance
+    let order = new Order(data);
 
     //check if income data valid
-    if(cart.isValid()){
-        //check if cart already exist
-        cart.update((err, message) => {
+    if(order.isValid()){
+        //check if order already exist
+        order.update((err, message) => {
             if(!err){
-                //if the no error cart successfully updated
+                //if the no error order successfully updated
                 callback(200, {message: message});
             } else {
                 callback(400, {message: message});
@@ -104,20 +104,20 @@ _shoppingCart.put = (data, callback) => {
     }
 };
 
-_shoppingCart.delete = (data, callback) => {
+_order.delete = (data, callback) => {
     //check if number suit requirements
-    let isEmailValid = validators.isValidEmail(data.email);
+    let isIdlValid = validators.isValidString(data.id);
 
-    if(isEmailValid){
-        //check if cart exist
-        ShoppingCart.getByEmail(data.email, (err, message, cart) => {
+    if(isIdlValid){
+        //check if order exist
+        Order.getById(data.id, (err, message, order) => {
             if(!err){
-                //if the no error, we can delete this cart
-                cart.delete((err, message) => {
+                //if the no error, we can delete this order
+                order.delete((err, message) => {
                     callback(400, {message: message});
                 });
             } else {
-                //such cart doesn't exist 
+                //such order doesn't exist 
                 callback(200, {message: message});
             }
         });
@@ -126,4 +126,4 @@ _shoppingCart.delete = (data, callback) => {
     }
 };
 
-module.exports = shoppingCart;
+module.exports = order;

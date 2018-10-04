@@ -1,5 +1,5 @@
 /**
- * User class
+ * ShoppingCart class
  */
 
 //Dependencies
@@ -9,20 +9,20 @@ const helpers = require('../servises/helpers'),
 
 class ShoppingCart {
     constructor(data = {}){
-        this.items = data.items;//MenuItem model ?? 
-        this.lastName = data.lastName;
-        this.email = data.email;
-        this.address = data.address;
-        this.agreement = data.agreement;
-        this.password = data.password;
-    }
-
-    static getCollectionName() {
-        return 'user';
+        this.id = helpers.getRandomString(15);
+        this.items = data.items;// {itemId: 1, quantity: 2}
+        this.summaryPrice = data.summaryPrice;
     }
 
     /**
-     * Validation of necessary user fields 
+     * Returns collection name 
+     */
+    static getCollectionName() {
+        return 'shopping-cart';
+    }
+
+    /**
+     * Validation of necessary cart fields 
      */
     isValid(){
         let isFirstNameValid = validators.isValidString(this.firstName);
@@ -34,49 +34,49 @@ class ShoppingCart {
     }
 
     /**
-     *  Get user from db by his email number
+     *  Get cart from db by his id
      * @param {*} callback 
      */
-    static getByEmail(email, callback){
-        database.read(User.getCollectionName(), email, (response) => {
-            let user = {};
+    static getById(email, callback){
+        database.read(ShoppingCart.getCollectionName(), email, (response) => {
+            let cart = {};
             if(!response.err){
                 let data = helpers.safeJsonParse(response.data);
-                user = new User(data);
+                cart = new ShoppingCart(data);
             }
 
-            callback(response.err, response.message, user);
+            callback(response.err, response.message, cart);
         });
     }
 
     /**
-     * Create new user
+     * Create new cart
      * @param {*} callback 
      */
     create(callback){
         //create hash for password
         this.password = helpers.hash(this.password);
         
-        //create file for new user
-        database.create(User.getCollectionName(), this.email, this, (response) => {
+        //create file for new cart
+        database.create(ShoppingCart.getCollectionName(), this.email, this, (response) => {
             //return response to controller 
             callback(response.err, response.message);
         });
     }
 
     update(callback){
-        database.update(User.getCollectionName(), this.email, this, (response) => {
+        database.update(ShoppingCart.getCollectionName(), this.email, this, (response) => {
             //return response to controller 
             callback(response.err, response.message, response.data);
         });
     }
 
     /**
-     * Delete user by his number
+     * Delete cart by his id
      * @param {*} callback 
      */
     delete(callback){
-        database.delete(User.getCollectionName(), this.email, (response) => {
+        database.delete(ShoppingCart.getCollectionName(), this.email, (response) => {
             //return response to controller 
             callback(response.err, response.message);
         })
