@@ -1,14 +1,15 @@
 //Dependencies
 const validators = require('../servises/validators'),
       Order = require('../models/Order'),
-      Token = require('../models/Token');
+      Token = require('../models/Token'),
+      stripe = require('../servises/stripe');
 
 let order = (data, callback) => {
     //permitted methods for controller
     const allowedMethods = {
         get: { needVerification: true }, 
         put: { needVerification: true }, 
-        post: { needVerification: true }, 
+        post: { needVerification: false }, 
         delete:{ needVerification: true }
     };
 
@@ -39,7 +40,7 @@ _order = {};
 
 _order.get = (data, callback) => {
     //check if number suit requirements
-    let isIdValid = validators.isValidid(data.id);
+    let isIdValid = validators.isValidString(data.id);
 
     if(isIdValid){
         //check if order exist
@@ -58,8 +59,15 @@ _order.get = (data, callback) => {
 
 _order.post = (data, callback) => {
     //check if number suit requirements
-    let isIdValid = validators.isValidid(data.id);
-
+    let isIdValid = validators.isValidString(data.id);
+    stripe.charge({amount: 250}, (err, response) => {
+        if(!err){
+            callback(200, response);
+        } else {
+            callback(500, response);
+        }
+    });
+    return;
     if(isIdValid){
         //check if order already exist
         Order.getById(data.id, (err, message) => {
