@@ -13,6 +13,7 @@ class Order {
         this.shoppingCartId = data.shoppingCartId;
         this.status = data.status;//TODO add Enumeration
         this.description = data.description;
+        this.summaryPrice = data.summaryPrice;
         this.belongTo = data.belongTo;
     }
 
@@ -27,12 +28,12 @@ class Order {
      * Validation of necessary order fields 
      */
     isValid(){
-        let isFirstNameValid = validators.isValidString(this.firstName);
-        let isLastNameValid = validators.isValidString(this.lastName);
-        let isAgreementValid = validators.isValidBoolen(this.agreement);
-        let isPasswordValid = validators.isValidPassword(this.password);
+        let isIdValid = validators.isValidString(this.id);
+        let isShoppingCartIdValid = validators.isValidString(this.shoppingCartId);
+        let isSummaryPriceValid = validators.isValidBoolen(this.summaryPrice);
+        let isBelongToValid = validators.isValidString(this.belongTo);
 
-        return isFirstNameValid && isLastNameValid && isAgreementValid && isPasswordValid;
+        return isIdValid && isShoppingCartIdValid && isSummaryPriceValid && isBelongToValid;
     }
 
     /**

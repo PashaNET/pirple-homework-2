@@ -18,7 +18,7 @@ class Request {
     }
 
     /**
-     * Method responsible for sending request
+     * Prepare and send request
      * @param {*} params 
      * @param {*} callback 
      */

@@ -11,7 +11,6 @@ class ShoppingCart {
     constructor(data = {}){
         this.id = helpers.getRandomString(15);
         this.items = data.items;// {itemId: 1, quantity: 2}
-        this.summaryPrice = data.summaryPrice;
     }
 
     /**

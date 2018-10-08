@@ -13,10 +13,10 @@ const stripe = {};
 stripe.charge = async (params, callback) => {
     //checking that necessary params are present 
     if (!params.amount || !params.source || !params.currency) {
-    //   callback(true, {message: 'Missing required fields'});
+    //   callback(true, {message: 'Missing required params'});
     }
 
-    let parameters = {
+    let parameters = { //TODO remove
         amout: params.amount || '300',
         currency: params.currency || 'USD',
         source: params.source || 'p@gmail.com'

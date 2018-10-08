@@ -2,7 +2,8 @@
 const validators = require('../servises/validators'),
       Order = require('../models/Order'),
       Token = require('../models/Token'),
-      stripe = require('../servises/stripe');
+      stripe = require('../servises/stripe'),
+      mailgun = require('../servises/mailgun');
 
 let order = (data, callback) => {
     //permitted methods for controller
@@ -60,12 +61,8 @@ _order.get = (data, callback) => {
 _order.post = (data, callback) => {
     //check if number suit requirements
     let isIdValid = validators.isValidString(data.id);
-    stripe.charge({amount: 250}, (err, response) => {
-        if(!err){
-            callback(200, response);
-        } else {
-            callback(500, response);
-        }
+    mailgun.send({}, (err, response) => {
+        callback(200, response)
     });
     return;
     if(isIdValid){
@@ -80,10 +77,17 @@ _order.post = (data, callback) => {
                 //check if income data valid
                 if(order.isValid()){
                     order.create((err, message) => {
-                        //sent request to payment system
-                        //sent email to user
-                        
-                        callback(200, {message: message});
+                        //send request to stripe
+                        stripe.charge(order, (err, response) => {
+                            if(!err){
+                                //send email-notification to user about success order
+                                mailgun.send(order, 'succesOrder');
+                                callback(200, response);
+                            } else {
+                                callback(500, response);
+                            }
+                        });
+                        // callback(200, {message: message});
                     });
                 } else {
                     callback(400, {message: 'Required params is invalid or order already exist'});
