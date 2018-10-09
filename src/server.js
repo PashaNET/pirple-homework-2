@@ -42,9 +42,6 @@ server.unifiedServer = (req, res) => {
       //choose controller from routers object
       const chosenHandler = typeof(routers[requestedPathname]) !== 'undefined' ? routers[requestedPathname] : routers['notFound'];
       
-      //TODO add to each handler token verification
-      //get token from header
-      //need email - how to get email? global user object
       //TODO create authController and keep auth data there 
       
       chosenHandler(data, (statusCode, data) => {

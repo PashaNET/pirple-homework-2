@@ -46,7 +46,7 @@ class Token {
     static verify(tokenId, userEmail, callback){
         Token.getById(tokenId, (err, message, token) => {
             if (!err){
-                //
+                //check if emails are same and token still valid 
                 if(token.email == userEmail && token.expires > Date.now()){
                     callback(true);
                 } else {

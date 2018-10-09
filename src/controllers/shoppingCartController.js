@@ -58,9 +58,10 @@ _shoppingCart.get = (data, callback) => {
 
 _shoppingCart.post = (data, callback) => {
     //check if number suit requirements
-    let isIdValid = validators.isValidEmail(data.id);
+    let isEmailValid = validators.isValidEmail(data.email);
 
-    if(isIdValid){
+    if(isEmailValid){
+        //TODO we don't have id here 
         //check if user already exist
         ShoppingCart.getById(data.id, (err, message) => {
             if(!err){

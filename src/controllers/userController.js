@@ -64,7 +64,7 @@ _user.post = (data, callback) => {
 
     if(isEmailValid){
         //check if user already exist
-        User.getByEmail(data.email, (err, message) => {
+        User.getByEmail(data.email, (err, message, user) => {
             if(!err){
                 //if the no error - user with that email already exist
                 callback(400, {message: message});
@@ -87,16 +87,23 @@ _user.post = (data, callback) => {
 };
 
 _user.put = (data, callback) => {
-    //create new user instance
-    let user = new User(data);
+    //check if params suit requirements
+    let isEmailValid = validators.isValidEmail(data.email);
 
     //check if income data valid
-    if(user.isValid()){
-        //check if user already exist
-        user.update((err, message) => {
+    if(isEmailValid){
+        //get user from db by his email
+        User.getByEmail(data.email, (err, message, user) => {
             if(!err){
-                //if the no error user successfully updated
-                callback(200, {message: message});
+                //update user with new data
+                user.update(data, (err, message) => {
+                    if(!err){
+                        //if the no error user successfully updated
+                        callback(200, {message: message});
+                    } else {
+                        callback(400, {message: message});
+                    }
+                });
             } else {
                 callback(400, {message: message});
             }
@@ -107,7 +114,7 @@ _user.put = (data, callback) => {
 };
 
 _user.delete = (data, callback) => {//should take a param
-    //check if number suit requirements
+    //check if params suit requirements
     let isEmailValid = validators.isValidEmail(data.email);
 
     if(isEmailValid){
@@ -116,7 +123,8 @@ _user.delete = (data, callback) => {//should take a param
             if(!err){
                 //if the no error, we can delete this user
                 user.delete((err, message) => {
-                    callback(400, {message: message});
+                    responseCode = err ? 400 : 200;
+                    callback(responseCode, {message: message});
                 });
             } else {
                 //such user doesn't exist 

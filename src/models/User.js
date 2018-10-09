@@ -25,10 +25,10 @@ class User {
      * Validation of necessary user fields 
      */
     isValid(){
-        let isFirstNameValid = validators.isValidString(this.firstName);
-        let isLastNameValid = validators.isValidString(this.lastName);
-        let isAgreementValid = validators.isValidBoolen(this.agreement);
-        let isPasswordValid = validators.isValidPassword(this.password);
+        let isFirstNameValid = validators.isValidString(this.firstName),
+            isLastNameValid = validators.isValidString(this.lastName),
+            isAgreementValid = validators.isValidBoolen(this.agreement),
+            isPasswordValid = validators.isValidPassword(this.password);
 
         return isFirstNameValid && isLastNameValid && isAgreementValid && isPasswordValid;
     }
@@ -64,8 +64,13 @@ class User {
         });
     }
 
-    update(callback){
-        database.update(User.getCollectionName(), this.email, this, (response) => {
+    /**
+     * Update existing user with new data
+     * @param {*} data 
+     * @param {*} callback 
+     */
+    update(data, callback){
+        database.update(User.getCollectionName(), this.email, data, (response) => {
             //return response to controller 
             callback(response.err, response.message, response.data);
         });

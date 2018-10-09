@@ -4,6 +4,7 @@ const pingController = require('./controllers/pingController'),
       tokenController = require('./controllers/tokenController'),
       userController = require('./controllers/userController'),
       menuController = require('./controllers/menuController'),
+      shoppingCartController = require('./controllers/shoppingCartController'),
       orderController = require('./controllers/orderController');
 
 let routers = {
@@ -12,6 +13,7 @@ let routers = {
   token: tokenController,
   user: userController,
   menu: menuController,
+  cart: shoppingCartController,
   order: orderController
 }
 

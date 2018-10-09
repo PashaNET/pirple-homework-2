@@ -23,4 +23,8 @@ validators.isValidPassword = (password) => {
     return typeof(password) == 'string' && password.trim().length >= 6;
 }
 
+validators.isNotEmptyArray = (array) => {
+    return typeof(array) == 'object' && array.length > 0;
+}
+
 module.exports = validators;

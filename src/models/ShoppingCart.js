@@ -24,16 +24,13 @@ class ShoppingCart {
      * Validation of necessary cart fields 
      */
     isValid(){
-        let isFirstNameValid = validators.isValidString(this.firstName);
-        let isLastNameValid = validators.isValidString(this.lastName);
-        let isAgreementValid = validators.isValidBoolen(this.agreement);
-        let isPasswordValid = validators.isValidPassword(this.password);
+        let isItemsValid = validators.isNoEmptyArray(this.items);
 
-        return isFirstNameValid && isLastNameValid && isAgreementValid && isPasswordValid;
+        return isItemsValid;
     }
 
     /**
-     *  Get cart from db by his id
+     *  Get cart from db by it id
      * @param {*} callback 
      */
     static getById(email, callback){
@@ -71,7 +68,7 @@ class ShoppingCart {
     }
 
     /**
-     * Delete cart by his id
+     * Delete cart by it id
      * @param {*} callback 
      */
     delete(callback){

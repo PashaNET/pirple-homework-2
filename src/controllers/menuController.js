@@ -5,10 +5,7 @@ const MenuItem = require('../models/MenuItem'),
 let menu = (data, callback) => {
     //permitted methods for controller
     const allowedMethods = {
-        get: { needVerification: false }, 
-        put: { needVerification: false }, 
-        post: { needVerification: false }, 
-        delete:{ needVerification: false }
+        get: { needVerification: true }
     };
 
     //check if request method allowed for this controller
