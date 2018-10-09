@@ -1,9 +1,12 @@
 # pirple.com
 Homework Assignment #2
-API description with examples of data requires to be present in requests
+
+
+
+API description with examples of parameters and data to be present in requests
 #/user 
+
     post - create 
-    
         {
             "firstName":"..",
             "lastName":"..",
@@ -31,8 +34,8 @@ API description with examples of data requires to be present in requests
             "email": "test@n.com"
         }
 #/token
+
     post - create 
-    
         {
             "email": "test@n.com",
             "password":".."
@@ -55,16 +58,34 @@ API description with examples of data requires to be present in requests
             "id": ".."
         }
 #/menuItems
-    get - read 
+
+	get - read 
         * token in header required
         {
             "email": "test@n.com"
         }
 #/shoppingCart
-    post - create 
-        {
-            "items": [{itemId: 1, quantity: 2}}
-        }
-#/order
 
+        post - create 
+    	* token in header required
+        {
+	    "email": "test@n.com"
+            "items": [{itemId: 1, quantity: 2}}
+        } 
+	
+	get - read
+	* token in header required
+	{
+	    "id": "...." 
+	}
+#/order
+	
+	post - create 
+	{
+	     "shoppingCartId" : "343m7fj3xnm3inq",
+	     "status" : "created",
+	     "description" : "some text",
+	     "summaryPrice" : "300",
+	     "belongTo" : "test@n.com"
+	}
 
