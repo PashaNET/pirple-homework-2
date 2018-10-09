@@ -5,56 +5,51 @@
 // Dependencies.
 const querystring = require('querystring'),
       config = require('../config'),
-      https = require('https'),
+      emailTemplates = require('../emailTemplates'),
       Request = require('../servises/Request');
 
 const mailgun = {};
 
 /**
  * Charge the payment.
- * @param {string} to
- * @param {string} subject
- * @param {string} text
- * @return {Promise}
+ * @param {object} params
+ * @param {string} emailType
+ * @param {function} callback
  */
-mailgun.send = (params, callback) => {//to, subject, text
+mailgun.send = (params, emailType, callback) => {
     //checking that necessary params are present 
-    if (!params.to || !params.subject || !params.text) {
-      //reject(new Error('Missing required fields'));
+    if (!params.belongTo || !params.subject || !params.text) {
+
+        //check if there exist template for current emailType
+        if(typeof emailTemplates[emailType] == 'undefined'){
+            //log
+            return;
+        }
     }
 
     // Configure the request payload.
     const payload = {
-      to: 'pavlo.netrebsky@gmail.com',
-      subject: "subject",
-      text: "text",
-      from: "postmaster@sandboxXXXXXXXXXXXXXXXXXX.mailgun.org",
+        to: params.belongTo,
+        subject: emailType + ' ' + params.id,
+        text: emailTemplates[emailType](params),
+        from: config.mailgun.fromAddress,
     };
-    // domainName: 'sandboxXXXXXXXXXXXXXXXXXX.mailgun.org',
-    // host: 'api.mailgun.net',
-    // authUsername: 'api',
-    // privateKey: 'XXXXXXXXXXXXXXXXXXXXXXXXX',
-    // from: 'postmaster@sandboxXXXXXXXXXXXXXXXXXX.mailgun.org'
 
     // Configure the request details.
     const requestParams = {
-      protocol: 'https',
-      host: 'api.mailgun.net',
-      path: '/v3/sandboxXXXXXXXXXXXXXXXXXX.mailgun.org/messages',
-      auth: 'api:XXXXXXXXXXXXXXXXXXXXXXXXX',
-      payload: querystring.stringify(payload)
+        protocol: 'https',
+        host: config.mailgun.host,
+        path: config.mailgun.path,
+        auth: config.mailgun.authUsername + ':' + config.mailgun.authKey,
+        payload: querystring.stringify(payload)
     };
 
-    // 
+    //Create instanse of Request class and send email 
     Request.create().send(requestParams, (err, response) => {
-      // 
-      const status = response.statusCode;
-      // 
-      if (status === 200 || status === 201) {
-        callback(false, response);
-      } else {
         callback(err, response);
-      }
+        //check status code
+        //response.statusCode, statusMessage
+        //TODO log
     });
 };
 

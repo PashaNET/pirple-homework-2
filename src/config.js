@@ -9,15 +9,16 @@ let stripeService = {
     prod: {
         hostname: 'api.stripe.com',
         paymentPath: '/v1/charges',
-        secretKey: 'sk_test_...'
+        secretKey: 'sk_test_xxxxxxx'
     }
 }
 let mailgunService = {
     staging: {
         host: 'api.mailgun.net',
-        path: '/v3/sandboxXXXXXXXXXXXXXXXXXX.mailgun.org/messages',
-        authUsername: '',
-        authKey: ''
+        path: '/v3/xxxxxxxxxx.mailgun.org/messages',
+        authUsername: 'api',
+        authKey: 'xxxxxxxxxxxxxxxxxxxxx-bd350f28-f68c724b',
+        fromAddress: 'postmaster@xxxxxxxxxx.mailgun.org'
     },
     prod: {
 
@@ -30,7 +31,7 @@ environment.staging = {
     envName: 'staging',
     hashSecret: 'testSecret',
     stripe: stripeService.staging,
-    mailgun: mailgun.staging
+    mailgun: mailgunService.staging
 };
 environment.production = {
     httpPort: 5000,
@@ -38,7 +39,7 @@ environment.production = {
     envName: 'production',
     hashSecret: 'prodSecretKey',
     stripe: stripeService.prod,
-    mailgun: mailgun.prod
+    mailgun: mailgunService.prod
 };
 
 let envMode = typeof(NODE_ENV) == 'string' ? NODE_ENV : 'staging'
