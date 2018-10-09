@@ -1,4 +1,4 @@
-[{"id":"1","title":"Monitor","price":"5.00","description":" some text here","imageLink":""},
- {"id":"3","title":"Keyboard","price":"5.00","description":" some text here","imageLink":""},
- {"id":"3","title":"Mouse","price":"5.00","description":" some text here","imageLink":""},
- {"id":"3","title":"PC","price":"5.00","description":" some text here","imageLink":""}]
+[{"id":"1","title":"Neapolitana","price":"5.00","description":" some text here","imageLink":""},
+ {"id":"3","title":"Peperoni","price":"5.00","description":" some text here","imageLink":""},
+ {"id":"3","title":"Vegetarian","price":"5.00","description":" some text here","imageLink":""},
+ {"id":"3","title":"With cheese","price":"5.00","description":" some text here","imageLink":""}]
