@@ -38,7 +38,7 @@ let shoppingCart = (data, callback) => {
 _shoppingCart = {};
 
 _shoppingCart.get = (data, callback) => {
-    //check if number suit requirements
+    //check if params suit requirements
     let isIdValid = validators.isValidEmail(data.id);
 
     if(isIdValid){
@@ -57,29 +57,23 @@ _shoppingCart.get = (data, callback) => {
 };
 
 _shoppingCart.post = (data, callback) => {
-    //check if number suit requirements
-    let isEmailValid = validators.isValidEmail(data.email);
+    //check if params suit requirements
+    let isEmailValid = validators.isValidEmail(data.email),
+        isNotEmptyItems = validators.isNotEmptyArray(data.items);
 
-    if(isEmailValid){
-        //TODO we don't have id here 
-        //check if user already exist
-        ShoppingCart.getById(data.id, (err, message) => {
-            if(!err){
-                //if the no error - cart with that id already exist
-                callback(400, {message: message});
-            } else {
-                //cart doesn't exist so create new one
-                let cart = new ShoppingCart(data);
-                //check if income data valid
-                if(cart.isValid()){
-                    cart.create((err, message) => {
-                        callback(200, {message: message});
-                    });
-                } else {
-                    callback(400, {message: 'Missing required params or cart already exist'});
-                }
-            }
-        });
+    if(isEmailValid && isNotEmptyItems){
+        //create instanse of cart
+        let cart = new ShoppingCart(data);
+        
+        //validate cart
+        if(cart.isValid()){
+            cart.create((err, message) => {
+                responseCode = err ? 400 : 200;
+                callback(responseCode, {message: message});
+            });
+        } else {
+            callback(400, {message: 'Missing required params'});
+        }
     } else {
         callback(400, {message: 'Invalid email'});
     }
@@ -93,12 +87,10 @@ _shoppingCart.put = (data, callback) => {
     if(cart.isValid()){
         //check if cart already exist
         cart.update((err, message) => {
-            if(!err){
-                //if the no error cart successfully updated
-                callback(200, {message: message});
-            } else {
-                callback(400, {message: message});
-            }
+            //get responseCode
+            let responseCode = err ? 200 : 400;
+
+            callback(responseCode, {message: message});
         });
     } else {
         callback(400, {message: 'Missed required params'});

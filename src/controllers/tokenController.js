@@ -84,7 +84,7 @@ _token.post = (data, callback) => {
                     callback(400, {message: 'Incorrect password or user with that email doesn\'t exist'});
                 }
             } else {
-                callback(400, {message: 'No such token'});
+                callback(400, {message: 'No such token.' + message});
             }
         });
     } else {

@@ -59,15 +59,16 @@ _order.get = (data, callback) => {
 };
 
 _order.post = (data, callback) => {
-    //check if number suit requirements
-    let isIdValid = validators.isValidString(data.id);
+    //check if params suit requirements
+    let isCartIdValid = validators.isValidString(data.shoppingCartId);
 
-    if(isIdValid){
+    if(isCartIdValid){
         //check if order already exist
-        Order.getById(data.id, (err, message) => {
-            if(!err){
+        Order.getById(data.shoppingCartId, (err, message) => {
+            if(err){
                 //order doesn't exist so create new one
                 let order = new Order(data);
+                
                 //check if income data valid
                 if(order.isValid()){
                     order.create((err, message) => {
@@ -75,24 +76,32 @@ _order.post = (data, callback) => {
                             //send request to stripe
                             stripe.charge(order, (err, response) => {
                                 if(!err){
-                                    //send email-notification to user about success order
-                                    mailgun.send(order, 'order', () => {});
-                                    
-                                    //return response to client
-                                    callback(200, response);
+                                    //update order status and save 
+                                    order.status = 'payed';
+                                    order.update((err, message) => {
+                                        if(!err){
+                                            //send email-notification to user about success order
+                                            mailgun.send(order, 'order', () => {});
+                                            
+                                            //return response to client
+                                            callback(200, response);
+                                        } else {
+                                            callback(500, {message: message});
+                                        }
+                                    });
                                 } else {
                                     callback(500, response);
                                 }
                             });
                         } else {
-                            callback(200, {message: message});
+                            callback(500, {message: message});
                         }
                     });
                 } else {
                     callback(400, {message: 'Required params is invalid or order already exist'});
                 }
             } else {
-                //there is no order with that id 
+                //there exist order with that id 
                 callback(400, {message: message});
             }
         });

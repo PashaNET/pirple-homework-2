@@ -9,9 +9,9 @@ const helpers = require('../servises/helpers'),
 
 class Order {
     constructor(data = {}){
-        this.id = data.id;
+        this.id = data.id || helpers.getRandomString(15);
         this.shoppingCartId = data.shoppingCartId;
-        this.status = data.status;//TODO add Enumeration
+        this.status = data.status || 'created';//TODO add Enumeration
         this.description = data.description;
         this.summaryPrice = data.summaryPrice;
         this.belongTo = data.belongTo;
@@ -30,7 +30,7 @@ class Order {
     isValid(){
         let isIdValid = validators.isValidString(this.id);
         let isShoppingCartIdValid = validators.isValidString(this.shoppingCartId);
-        let isSummaryPriceValid = validators.isValidBoolen(this.summaryPrice);
+        let isSummaryPriceValid = validators.isValidString(this.summaryPrice);
         let isBelongToValid = validators.isValidString(this.belongTo);
 
         return isIdValid && isShoppingCartIdValid && isSummaryPriceValid && isBelongToValid;
@@ -61,14 +61,14 @@ class Order {
         this.password = helpers.hash(this.password);
         
         //create file for new order
-        database.create(Order.getCollectionName(), this.id, this, (response) => {
+        database.create(Order.getCollectionName(), this.shoppingCartId, this, (response) => {
             //return response to controller 
             callback(response.err, response.message);
         });
     }
 
     update(callback){
-        database.update(Order.getCollectionName(), this.id, this, (response) => {
+        database.update(Order.getCollectionName(), this.shoppingCartId, this, (response) => {
             //return response to controller 
             callback(response.err, response.message, response.data);
         });
@@ -79,7 +79,7 @@ class Order {
      * @param {*} callback 
      */
     delete(callback){
-        database.delete(Order.getCollectionName(), this.id, (response) => {
+        database.delete(Order.getCollectionName(), this.shoppingCartId, (response) => {
             //return response to controller 
             callback(response.err, response.message);
         })

@@ -24,7 +24,7 @@ class ShoppingCart {
      * Validation of necessary cart fields 
      */
     isValid(){
-        let isItemsValid = validators.isNoEmptyArray(this.items);
+        let isItemsValid = validators.isNotEmptyArray(this.items);
 
         return isItemsValid;
     }
@@ -33,8 +33,8 @@ class ShoppingCart {
      *  Get cart from db by it id
      * @param {*} callback 
      */
-    static getById(email, callback){
-        database.read(ShoppingCart.getCollectionName(), email, (response) => {
+    static getById(id, callback){
+        database.read(ShoppingCart.getCollectionName(), id, (response) => {
             let cart = {};
             if(!response.err){
                 let data = helpers.safeJsonParse(response.data);
@@ -54,14 +54,14 @@ class ShoppingCart {
         this.password = helpers.hash(this.password);
         
         //create file for new cart
-        database.create(ShoppingCart.getCollectionName(), this.email, this, (response) => {
+        database.create(ShoppingCart.getCollectionName(), this.id, this, (response) => {
             //return response to controller 
             callback(response.err, response.message);
         });
     }
 
     update(callback){
-        database.update(ShoppingCart.getCollectionName(), this.email, this, (response) => {
+        database.update(ShoppingCart.getCollectionName(), this.id, this, (response) => {
             //return response to controller 
             callback(response.err, response.message, response.data);
         });
@@ -72,7 +72,7 @@ class ShoppingCart {
      * @param {*} callback 
      */
     delete(callback){
-        database.delete(ShoppingCart.getCollectionName(), this.email, (response) => {
+        database.delete(ShoppingCart.getCollectionName(), this.id, (response) => {
             //return response to controller 
             callback(response.err, response.message);
         })
