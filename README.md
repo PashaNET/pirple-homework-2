@@ -1,6 +1,6 @@
 # pirple.com
 Homework Assignment #2
-
+  
 Project structure:
 ```bash
 ├── .data
@@ -17,7 +17,8 @@ Project structure:
 ├── README.md
 └── .gitignore
 
-
+  server.js file responsible for choosing proper controller according to request. Every conroller works with certain model which reaponsible for operations with db and other logic related to this model.  
+  
 Short API description with examples of parameters and data to be present in requests
 
 #/user 
