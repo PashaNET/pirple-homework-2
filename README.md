@@ -16,6 +16,7 @@ Project structure:
 ├── index.js
 ├── README.md
 └── .gitignore
+```
 
   server.js file responsible for choosing proper controller according to request. Every conroller works with certain model which reaponsible for operations with db and other logic related to this model.  
   
