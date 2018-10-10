@@ -36,18 +36,18 @@ Short API description with examples of parameters and data to be present in requ
         }
         
     get  - read 
-        * token in header required
+        * token in header is required
         {
             "email": "test@n.com"
         }
     put - update
-        * token in header required
+        * token in header is required
         {
             "email": "test@n.com"
             //any user field
         }
     delete - delete 
-        * token in header required
+        * token in header is required
         {
             "email": "test@n.com"
         }
@@ -60,39 +60,39 @@ Short API description with examples of parameters and data to be present in requ
         }
         
     get  - read 
-        * token in header required
+        * token in header is required
         {
             id: ".."
         }
     put - update
-        * token in header required
+        * token in header is required
         {
         	"id": "..",
 	        "extend": true
         }
     delete - delete 
-        * token in header required
+        * token in header is required
         {
             "id": ".."
         }
 #/menu
 
 	get - read 
-        * token in header required
+        * token in header is required
         {
             "email": "test@n.com"
         }
 #/cart
 
         post - create 
-    	* token in header required
+    	* token in header is required
         {
 	    "email": "test@n.com"
             "items": [{itemId: 1, quantity: 2}}
         } 
 	
 	get - read
-	* token in header required
+	* token in header is required
 	{
 	    "id": "...." 
 	}
