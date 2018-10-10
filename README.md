@@ -1,9 +1,24 @@
 # pirple.com
 Homework Assignment #2
 
+Project structure:
+
+├── .data
+├── https
+├── src
+│   ├── controllers
+│   ├── emailTemplates
+│   ├── models
+│   ├── services
+│   ├── config.js
+│   ├── routers.js
+│   └── server.js
+├── index.js
+├── README.md
+└── .gitignore
 
 
-API description with examples of parameters and data to be present in requests
+Short API description with examples of parameters and data to be present in requests
 
 #/user 
 
@@ -86,7 +101,8 @@ API description with examples of parameters and data to be present in requests
 	     "shoppingCartId" : "343m7fj3xnm3inq",
 	     "status" : "created",
 	     "description" : "some text",
-	     "summaryPrice" : "300",
-	     "belongTo" : "test@n.com"
+	     "amount" : "300",
+	     "source" : "test@n.com",
+	     "currency" : "USD" 
 	}
 
