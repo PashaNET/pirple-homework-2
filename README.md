@@ -2,7 +2,7 @@
 Homework Assignment #2
 
 Project structure:
-
+```bash
 ├── .data
 ├── https
 ├── src
