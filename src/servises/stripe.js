@@ -13,32 +13,24 @@ const stripe = {};
 stripe.charge = async (params, callback) => {
     //checking that necessary params are present 
     if (!params.amount || !params.source || !params.currency) {
-    //   callback(true, {message: 'Missing required params'});
+       callback(true, {message: 'Missing required params'});
     }
 
-    let parameters = { //TODO remove
-        amout: params.amount || '300',
-        currency: params.currency || 'USD',
-        source: params.source || 'p@gmail.com'
-    }
-
-    //prepare all params and payload for stripe service
+    //prepare params and payload for request to stripe
     let requestParams = {
         protocol: 'https',
         host: config.stripe.hostname,
         path: config.stripe.paymentPath,
         auth: config.stripe.secretKey + ':',
-        payload: querystring.stringify({...parameters}),
+        payload: querystring.stringify(params),
         description: '',
         metadata: {}
     }
 
     Request.create().send(requestParams, (err, response) => {
-        if(!err){
-            callback(false, response)
-        } else {
-            callback(err, response);
-        }
+        //
+        let error = err ? err : false;
+        callback(error, response);
     })
 };
 

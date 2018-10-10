@@ -18,7 +18,7 @@ const mailgun = {};
  */
 mailgun.send = (params, emailType, callback) => {
     //checking that necessary params are present 
-    if (!params.belongTo || !params.subject || !params.text) {
+    if (!params.source || !params.subject || !params.text) {
 
         //check if there exist template for current emailType
         if(typeof emailTemplates[emailType] == 'undefined'){
@@ -29,7 +29,7 @@ mailgun.send = (params, emailType, callback) => {
 
     // Configure the request payload.
     const payload = {
-        to: params.belongTo,
+        to: params.source,
         subject: emailType + ' ' + params.id,
         text: emailTemplates[emailType](params),
         from: config.mailgun.fromAddress,

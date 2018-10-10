@@ -27,7 +27,7 @@ let database = {};
 //Create new file and put data
 database.create = (dir, fileName, data, callback) => {
     //open file for writing
-    fs.open(_concatPathToTheFile(dir, fileName), 'wx', (err, fileDescriptor) => {
+    fs.open(_concatPathToTheFile(dir, fileName), 'wx', (err, fileDescriptor) => {//TODO create a dir automatically if it doesn't exist
         if(!err && fileDescriptor){
             //convert data to json string
             data = JSON.stringify(data); 

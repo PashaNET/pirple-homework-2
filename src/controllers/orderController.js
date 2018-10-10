@@ -40,7 +40,7 @@ let order = (data, callback) => {
 _order = {};
 
 _order.get = (data, callback) => {
-    //check if number suit requirements
+    //check if params suit requirements
     let isIdValid = validators.isValidString(data.id);
 
     if(isIdValid){
@@ -74,7 +74,7 @@ _order.post = (data, callback) => {
                     order.create((err, message) => {
                         if(!err){
                             //send request to stripe
-                            stripe.charge(order, (err, response) => {
+                            stripe.charge(order, (err, response) => {//TODO use async/await for services
                                 if(!err){
                                     //update order status and save 
                                     order.status = 'payed';
@@ -98,11 +98,11 @@ _order.post = (data, callback) => {
                         }
                     });
                 } else {
-                    callback(400, {message: 'Required params is invalid or order already exist'});
+                    callback(400, {message: 'Required params is invalid'});
                 }
             } else {
                 //there exist order with that id 
-                callback(400, {message: message});
+                callback(400, {message: 'Such order already exist'});
             }
         });
     } else {
@@ -131,7 +131,7 @@ _order.put = (data, callback) => {
 };
 
 _order.delete = (data, callback) => {
-    //check if number suit requirements
+    //check if params suit requirements
     let isIdlValid = validators.isValidString(data.id);
 
     if(isIdlValid){
