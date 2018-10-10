@@ -75,14 +75,14 @@ Short API description with examples of parameters and data to be present in requ
         {
             "id": ".."
         }
-#/menuItems
+#/menu
 
 	get - read 
         * token in header required
         {
             "email": "test@n.com"
         }
-#/shoppingCart
+#/cart
 
         post - create 
     	* token in header required
