@@ -16,6 +16,7 @@ Project structure:
 ├── index.js
 ├── README.md
 └── .gitignore
+```
 
   server.js file responsible for choosing proper controller according to request. Every conroller works with certain model which reaponsible for operations with db and other logic related to this model.  
   
@@ -35,18 +36,18 @@ Short API description with examples of parameters and data to be present in requ
         }
         
     get  - read 
-        * token in header required
+        * token in header is required
         {
             "email": "test@n.com"
         }
     put - update
-        * token in header required
+        * token in header is required
         {
             "email": "test@n.com"
             //any user field
         }
     delete - delete 
-        * token in header required
+        * token in header is required
         {
             "email": "test@n.com"
         }
@@ -59,39 +60,39 @@ Short API description with examples of parameters and data to be present in requ
         }
         
     get  - read 
-        * token in header required
+        * token in header is required
         {
             id: ".."
         }
     put - update
-        * token in header required
+        * token in header is required
         {
         	"id": "..",
 	        "extend": true
         }
     delete - delete 
-        * token in header required
+        * token in header is required
         {
             "id": ".."
         }
-#/menuItems
+#/menu
 
 	get - read 
-        * token in header required
+        * token in header is required
         {
             "email": "test@n.com"
         }
-#/shoppingCart
+#/cart
 
         post - create 
-    	* token in header required
+    	* token in header is required
         {
 	    "email": "test@n.com"
             "items": [{itemId: 1, quantity: 2}}
         } 
 	
 	get - read
-	* token in header required
+	* token in header is required
 	{
 	    "id": "...." 
 	}
