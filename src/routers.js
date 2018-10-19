@@ -5,16 +5,33 @@ const pingController = require('./controllers/pingController'),
       userController = require('./controllers/userController'),
       menuController = require('./controllers/menuController'),
       shoppingCartController = require('./controllers/shoppingCartController'),
-      orderController = require('./controllers/orderController');
-
+      orderController = require('./controllers/orderController'),
+      pages = require('./pages');
+      
 let routers = {
-  ping: pingController,
+  //API json handlers
+  'ping': pingController,
+  'api/token': tokenController,
+  'api/user/': userController,
+  'api/menu': menuController,
+  'api/cart': shoppingCartController,
+  'api/order': orderController,
+
+  //HTML handlers
+  '': pages.index,
   notFound: null, //TODO create controller
-  token: tokenController,
-  user: userController,
-  menu: menuController,
-  cart: shoppingCartController,
-  order: orderController
+
+  //'': index
+  //account/signin
+  //account/login
+  //account/logout
+  //account/delete
+  //menu-list
+  //cart
 }
+// 1. Signup on the site
+// 2. View all the items available to order
+// 3. Fill up a shopping cart
+// 4. Place an order (with fake credit card credentials), and receive an email receipt
 
 module.exports = routers;

@@ -44,12 +44,28 @@ server.unifiedServer = (req, res) => {
       
       //TODO create authController and keep auth data there 
       
-      chosenHandler(data, (statusCode, data) => {
+      chosenHandler(data, (statusCode, data, contentType) => {
+        let responseData, contentType;
+
+        switch(contentType){
+          case 'json':
+            data = typeof(data) == 'object' ? data : {};
+            responseData = JSON.stringify(data);
+            contentType = 'application/json';
+            break;
+          case 'html':
+            responseData = typeof(data) == 'string' ? data : '';
+            contentType = 'text/html';
+            break;
+          default: 
+            responseData = {};
+            contentType = 'application/json';
+        }
+      
+        
         statusCode = typeof(statusCode) == 'number' ? statusCode : 200;//TODO create constants with codes
-        data = typeof(data) == 'object' ? data : {};//TODO add method to helpers
-        let responseData = JSON.stringify(data);
-  
-        res.setHeader('Content-type', 'application/json');
+
+        res.setHeader('Content-type', contentType);
         res.writeHead(statusCode);
         res.end(responseData);
       });
