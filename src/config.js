@@ -1,5 +1,10 @@
 let environment = {};
 
+let globalTemplateData = {
+    companyName: 'MyCompany',
+    year: '2018'
+}
+
 let stripeService = {
     staging: {
         hostname: 'api.stripe.com',
@@ -26,6 +31,7 @@ let mailgunService = {
 }
 
 environment.staging = {
+    globalTemplateData: globalTemplateData,
     httpPort: 3000,
     httpsPort: 3001,
     envName: 'staging',
@@ -34,6 +40,7 @@ environment.staging = {
     mailgun: mailgunService.staging
 };
 environment.production = {
+    globalTemplateData: globalTemplateData,
     httpPort: 5000,
     httpsPort: 5001,
     envName: 'production',

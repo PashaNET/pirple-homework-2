@@ -27,4 +27,8 @@ validators.isNotEmptyArray = (array) => {
     return typeof(array) == 'object' && array.length > 0;
 }
 
+validators.isValidObject = (object) => {
+    return typeof(object) == 'object' && object !== null;
+}
+
 module.exports = validators;

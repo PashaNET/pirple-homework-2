@@ -42,10 +42,8 @@ server.unifiedServer = (req, res) => {
       //choose controller from routers object
       const chosenHandler = typeof(routers[requestedPathname]) !== 'undefined' ? routers[requestedPathname] : routers['notFound'];
       
-      //TODO create authController and keep auth data there 
-      
       chosenHandler(data, (statusCode, data, contentType) => {
-        let responseData, contentType;
+        let responseData;
 
         switch(contentType){
           case 'json':
