@@ -6,8 +6,25 @@
 //Dependencies 
 const fs = require('fs'),
       path = require('path'),
-      config = require('../config');
+      config = require('../config'),
+      validators = require('../servises/validators');
 
+let pageHandlers = {
+    'index': indexHandler
+}
+
+function indexHandler(data, callback){
+    let pageName = 'index';
+    let indexData = {};
+
+    getTemplate(pageName, indexData, (err, template) => {
+        if(!err){
+            callback(false, template, 'html');
+        } else {
+            callback(true, err, 'html');
+        }
+    });
+}
 
 function getTemplate(pageName, pageData, callback){
     let pathToTemplate = path.join(__dirname, pageName + '.html');
@@ -57,31 +74,12 @@ function interpolate(template, params){
     for(let key in globalParams){
         if(globalParams.hasOwnProperty(key)){
             let find = '{global.' + key + '}';
-            //{global.companyName}
             template = template.replace(find, globalParams[key]);
-            //TODO indexOf??
-            let t = '';
+            console.log(typeof(template), "{global.companyName}" == find);
         }
     }
     return template;
 }
 
-/**
- * 
- * @param {*} pageName 
- * @param {*} data 
- * @param {*} callback 
- */
-function preparePageTemlate(data, callback){
-    let pageName = 'index';
 
-    getTemplate(pageName, data, (err, template) => {
-        if(!err){
-            callback(false, template);
-        } else {
-
-        }
-    });
-}
-
-module.exports = preparePageTemlate;
+module.exports = pageHandlers;

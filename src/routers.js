@@ -6,7 +6,7 @@ const pingController = require('./controllers/pingController'),
       menuController = require('./controllers/menuController'),
       shoppingCartController = require('./controllers/shoppingCartController'),
       orderController = require('./controllers/orderController'),
-      templateController = require('./pages');
+      templateController = require('./pages/templateController');
       
 let routers = {
   //API json handlers
@@ -18,7 +18,7 @@ let routers = {
   'api/order': orderController,
 
   //HTML handlers
-  '': templateController,//TODO
+  '': templateController.index,//TODO
   notFound: null, //TODO create controller
 
   //account/signin

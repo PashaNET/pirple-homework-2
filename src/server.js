@@ -34,6 +34,7 @@ server.unifiedServer = (req, res) => {
       
       //define params for handler
       let data = {
+        path: requestedPathname,
         payload: payload,
         method: method,
         headers: req.headers
