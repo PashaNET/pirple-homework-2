@@ -18,7 +18,7 @@ let routers = {
   'api/order': orderController,
 
   //HTML handlers
-  '': templateController.index,//TODO
+  '': templateController.index,
   notFound: null, //TODO create controller
 
   //account/signin

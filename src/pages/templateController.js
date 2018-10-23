@@ -15,7 +15,10 @@ let pageHandlers = {
 
 function indexHandler(data, callback){
     let pageName = 'index';
-    let indexData = {};
+    let indexData = {
+        title: 'Home page',
+        text: 'Hello world'
+    };
 
     getTemplate(pageName, indexData, (err, template) => {
         if(!err){
@@ -69,15 +72,23 @@ function addUniversalTemplateParts(templateStr, callback){
  */
 function interpolate(template, params){
     let globalParams = config.globalTemplateData;
-    //merdge with params 
 
+    //replace global variables 
     for(let key in globalParams){
         if(globalParams.hasOwnProperty(key)){
             let find = '{global.' + key + '}';
             template = template.replace(find, globalParams[key]);
-            console.log(typeof(template), "{global.companyName}" == find);
         }
     }
+
+    //replace all related to page variables
+    for(let key in params){
+        if(params.hasOwnProperty(key)){
+            let find = '{' + key + '}';
+            template = template.replace(find, params[key]);
+        }
+    }
+
     return template;
 }
 
