@@ -10,7 +10,15 @@ const fs = require('fs'),
       validators = require('../servises/validators');
 
 let pageHandlers = {
+    'public': assetHandler,
     'index': indexHandler
+}
+
+function assetHandler(data, callback){ 
+    //if get method
+    //get and 'replace' public in path, check if valid
+    //getStaticAsset, read file and define content type 
+    //
 }
 
 function indexHandler(data, callback){

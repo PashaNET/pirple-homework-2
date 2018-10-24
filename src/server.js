@@ -40,13 +40,16 @@ server.unifiedServer = (req, res) => {
         headers: req.headers
       };
       
+      //if request to public directory, use pageHandler
+      let requestedPathname = requestedPathname.indexOf('public') ? 'public' : requestedPathname;
+
       //choose controller from routers object
       const chosenHandler = typeof(routers[requestedPathname]) !== 'undefined' ? routers[requestedPathname] : routers['notFound'];
       
       chosenHandler(data, (statusCode, data, contentType) => {
         let responseData;
 
-        switch(contentType){
+        switch(contentType){ //TODO move this logic to handler
           case 'json':
             data = typeof(data) == 'object' ? data : {};
             responseData = JSON.stringify(data);

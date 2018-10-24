@@ -2,7 +2,8 @@ let environment = {};
 
 let globalTemplateData = {
     companyName: 'MyCompany',
-    year: '2018'
+    year: '2018',
+    baseUrl: 'http://localhost:3000'
 }
 
 let stripeService = {
