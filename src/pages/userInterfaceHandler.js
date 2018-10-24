@@ -10,15 +10,47 @@ const fs = require('fs'),
       validators = require('../servises/validators');
 
 let pageHandlers = {
-    'public': assetHandler,
-    'index': indexHandler
+    favicon: faviconHandler,
+    public: assetHandler,
+    index: indexHandler
 }
 
 function assetHandler(data, callback){ 
-    //if get method
-    //get and 'replace' public in path, check if valid
-    //getStaticAsset, read file and define content type 
     //
+    if(data.method == 'get'){
+        let assetName = data.path.replace('public', '');
+        let pathToAsset = path.join(__dirname, '../../public', assetName);
+        fs.readFile(pathToAsset, (err, stringPayload) => {
+            if(!err){
+                //
+                let contentType = assetName.split('.').pop();
+                //
+                contentType = contentType == 'ico' ? 'favicon' : contentType;
+
+                callback(200, stringPayload, contentType);
+            } else {
+                callback(500, err, 'plain');
+            }
+        });
+    } else {
+        callback(403, {message: 'Method not allowed'}, 'html');
+    }
+}
+
+function faviconHandler(data, callback){ 
+    //
+    if(data.method == 'get'){
+        let pathToAsset = path.join(__dirname, '../../', 'favicon.ico');
+        fs.readFile(pathToAsset, (err, stringPayload) => {
+            if(!err){
+                callback(200, stringPayload, 'favicon');
+            } else {
+                callback(500, err, 'plain');
+            }
+        });
+    } else {
+        callback(403, {message: 'Method not allowed'}, 'html');
+    }
 }
 
 function indexHandler(data, callback){

@@ -40,8 +40,8 @@ server.unifiedServer = (req, res) => {
         headers: req.headers
       };
       
-      //if request to public directory, use pageHandler
-      let requestedPathname = requestedPathname.indexOf('public') ? 'public' : requestedPathname;
+      //if request to public directory, use public handler
+      requestedPathname = requestedPathname.indexOf('public') > -1 ? 'public' : requestedPathname;
 
       //choose controller from routers object
       const chosenHandler = typeof(routers[requestedPathname]) !== 'undefined' ? routers[requestedPathname] : routers['notFound'];
@@ -59,8 +59,28 @@ server.unifiedServer = (req, res) => {
             responseData = typeof(data) == 'string' ? data : '';
             contentType = 'text/html';
             break;
+          case 'png':
+            responseData = typeof(data) !== 'undefined' ? data : '';
+            contentType = 'image/png';
+            break;
+          case 'jpg':
+            responseData = typeof(data) !== 'undefined' ? data : '';
+            contentType = 'image/jpeg';
+            break;
+          case 'favicon':
+            responseData = typeof(data) !== 'undefined' ? data : '';
+            contentType = 'image/x-icon';
+            break;
+          case 'plaing':
+            responseData = typeof(data) !== 'undefined' ? data : '';
+            contentType = 'text/plain';
+            break;
+          case 'css':
+            responseData = typeof(data) !== 'undefined' ? data : '';  
+            contentType = 'text/css';
+            break;
           default: 
-            responseData = {};
+            responseData = "{}";
             contentType = 'application/json';
         }
       

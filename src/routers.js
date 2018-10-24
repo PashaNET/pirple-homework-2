@@ -6,7 +6,7 @@ const pingController = require('./controllers/pingController'),
       menuController = require('./controllers/menuController'),
       shoppingCartController = require('./controllers/shoppingCartController'),
       orderController = require('./controllers/orderController'),
-      pageHandler = require('./pages/pageHandler');
+      userInterfaceHandler = require('./pages/userInterfaceHandler');
       
 let routers = {
   //API json handlers
@@ -18,14 +18,16 @@ let routers = {
   'api/order': orderController,
 
   //HTML handlers
-  '': pageHandler.index,
-  'account/create': pageHandler.account,
-  'account/edit': pageHandler.account,
-  'account/logout': pageHandler.account,
-  'session/create': pageHandler.session, //???
-  'favicon.ico': pageHandler.favicon,
-  'public': pageHandler.public,
-  'notFound': null, //TODO create controller
+  '': userInterfaceHandler.index,
+  'account/create': userInterfaceHandler.account,
+  'account/edit': userInterfaceHandler.account,
+  'account/logout': userInterfaceHandler.account,
+  'session/create': userInterfaceHandler.session, //???
+  'favicon.ico': userInterfaceHandler.favicon,
+  'public': userInterfaceHandler.public,
+  'notFound': (data, callback) => {
+    callback(403, {}, 'html');
+  }, //TODO create controller
 
 
   //menu-list
