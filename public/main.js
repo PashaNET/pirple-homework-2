@@ -1,2 +1,16 @@
+/**
+ * Frontend script
+ */
 
-console.log('hello');
+ // app container
+let app = {};
+
+app.config = {
+    sessionToken: false
+};
+
+app.client = {
+    request: () => {
+        
+    }
+};
