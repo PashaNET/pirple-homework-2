@@ -16,22 +16,25 @@ let routers = {
   'api/menu': menuController,
   'api/cart': shoppingCartController,
   'api/order': orderController,
+  'notFound': (data, callback) => {
+    callback(403, {}, 'html');
+  },
 
   //HTML handlers
   '': userInterfaceHandler.index,
   'account/create': userInterfaceHandler.account,
   'account/edit': userInterfaceHandler.account,
-  'account/logout': userInterfaceHandler.account,
-  'session/create': userInterfaceHandler.session, //???
+  
+  'account/logout': userInterfaceHandler.session, // delete token, then redirect to home page???
+  'session/create': userInterfaceHandler.session, // create token, then redirect to menu page
+  
+  'menu': userInterfaceHandler.menu,
+  'cart': userInterfaceHandler.cart,
+  'order': userInterfaceHandler.order,
+
   'favicon.ico': userInterfaceHandler.favicon,
   'public': userInterfaceHandler.public,
-  'notFound': (data, callback) => {
-    callback(403, {}, 'html');
-  }, //TODO create controller
 
-
-  //menu-list
-  //cart
 }
 // 1. Signup on the site
 // 2. View all the items available to order

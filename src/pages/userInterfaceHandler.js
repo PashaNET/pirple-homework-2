@@ -16,16 +16,14 @@ let pageHandlers = {
 }
 
 function assetHandler(data, callback){ 
-    //
+    //only 'get' method allowed
     if(data.method == 'get'){
         let assetName = data.path.replace('public', '');
         let pathToAsset = path.join(__dirname, '../../public', assetName);
         fs.readFile(pathToAsset, (err, stringPayload) => {
             if(!err){
-                //
+                //get the extension to define the content type 
                 let contentType = assetName.split('.').pop();
-                //
-                contentType = contentType == 'ico' ? 'favicon' : contentType;
 
                 callback(200, stringPayload, contentType);
             } else {
