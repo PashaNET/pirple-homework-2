@@ -54,8 +54,10 @@ function faviconHandler(data, callback){
 function indexHandler(data, callback){
     let pageName = 'index';
     let indexData = {
-        title: 'Home page',
-        text: 'Hello world'
+        class: 'index',
+        title: 'Home',
+        header: 'Hello friend!',
+        text: 'This is the best internet shop. Please login or signup to see list of goods.'
     };
 
     getTemplate(pageName, indexData, (err, template) => {

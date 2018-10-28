@@ -79,6 +79,10 @@ server.unifiedServer = (req, res) => {
             responseData = typeof(data) !== 'undefined' ? data : '';  
             contentType = 'text/css';
             break;
+          case 'js':
+            responseData = typeof(data) !== 'undefined' ? data : '';  
+            contentType = 'text/js';
+            break;
           default: 
             responseData = "{}";
             contentType = 'application/json';
