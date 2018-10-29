@@ -50,11 +50,11 @@ server.unifiedServer = (req, res) => {
         let responseData;
 
         switch(contentType){ //TODO move this logic to handler
-          case 'json':
-            data = typeof(data) == 'object' ? data : {};
-            responseData = JSON.stringify(data);
-            contentType = 'application/json';
-            break;
+          // case 'json':
+          //   data = typeof(data) == 'object' ? data : {};
+          //   responseData = JSON.stringify(data);
+          //   contentType = 'application/json';
+          //   break;
           case 'html':
             responseData = typeof(data) == 'string' ? data : '';
             contentType = 'text/html';
@@ -84,7 +84,8 @@ server.unifiedServer = (req, res) => {
             contentType = 'text/js';
             break;
           default: 
-            responseData = "{}";
+            data = typeof(data) == 'object' ? data : {};
+            responseData = JSON.stringify(data);
             contentType = 'application/json';
         }
       

@@ -105,7 +105,7 @@ app.bindForms = function(){
         if(statusCode !== 200){
   
           // Try to get the error from the api, or set a default error message
-          var error = typeof(responsePayload.Error) == 'string' ? responsePayload.Error : 'An error has occured, please try again';
+          var error = typeof(responsePayload.message) == 'string' ? responsePayload.message : 'An error has occured, please try again';
   
           // Set the formError field with the error text//TODO one selector
           document.querySelector("#"+formId+" .formError").innerHTML = error;
@@ -123,17 +123,15 @@ app.bindForms = function(){
   
   // Form response processor
   app.formResponseProcessor = function(formId, requestPayload, responsePayload){
-    var functionToCall = false;
-    var functionToCall = false;
     // If account creation was successful, try to immediately log the user in
     if(formId == 'accountCreate'){
-      // Take the phone and password, and use it to log the user in
+      // Take the email and password, and use it to log the user in
       var newPayload = {
-        'phone' : requestPayload.phone,
+        'email' : requestPayload.email,
         'password' : requestPayload.password
       };
   
-      app.client.request(undefined,'api/tokens','POST',undefined,newPayload,function(newStatusCode,newResponsePayload){
+      app.client.request(undefined,'api/token','POST',undefined,newPayload,function(newStatusCode,newResponsePayload){
         // Display an error on the form if needed
         if(newStatusCode !== 200){
   
@@ -146,14 +144,14 @@ app.bindForms = function(){
         } else {
           // If successful, set the token and redirect the user
           app.setSessionToken(newResponsePayload);
-          window.location = '/checks/all';
+          window.location = '/session/create';
         }
       });
     }
     // If login was successful, set the token in localstorage and redirect the user
     if(formId == 'sessionCreate'){
       app.setSessionToken(responsePayload);
-      window.location = '/checks/all';
+      window.location = '/menu';
     }
   };
   
@@ -207,12 +205,13 @@ app.renewToken = function(callback){
       'id' : currentToken.id,
       'extend' : true,
     };
-    app.client.request(undefined,'api/tokens','PUT',undefined,payload,function(statusCode,responsePayload){
+    app.client.request(undefined,'api/token','PUT',undefined,payload,function(statusCode,responsePayload){
+      //TODO return on PUT 
       // Display an error on the form if needed
       if(statusCode == 200){
         // Get the new token details
         var queryStringObject = {'id' : currentToken.id};
-        app.client.request(undefined,'api/tokens','GET',queryStringObject,undefined,function(statusCode,responsePayload){
+        app.client.request(undefined,'api/token','GET',queryStringObject,undefined,function(statusCode,responsePayload){
           // Display an error on the form if needed
           if(statusCode == 200){
             app.setSessionToken(responsePayload);
@@ -241,7 +240,7 @@ app.tokenRenewalLoop = function(){
         console.log("Token renewed successfully @ "+Date.now());
       }
     });
-  },1000 * 60);
+  }, 1000 * 60);
 };
 
 // Init (bootstrapping)

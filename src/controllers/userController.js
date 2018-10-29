@@ -66,8 +66,8 @@ _user.post = (data, callback) => {
         //check if user already exist
         User.getByEmail(data.email, (err, message, user) => {
             if(!err){
-                //if the no error - user with that email already exist
-                callback(400, {message: message});
+                //if there no error - such user exist
+                callback(400, {message: 'User with that already exist'});
             } else {
                 //user doesn't exist so create new one
                 let user = new User(data);

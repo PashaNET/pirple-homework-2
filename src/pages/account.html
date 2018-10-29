@@ -1,6 +1,6 @@
 <h1>{header}</h1>
 <div class="formWrapper">
-    <form id="createAccount" action="account/create" method="POST">
+    <form id="accountCreate" action="api/user" method="POST">
         <div class="formError"></div>
         <div class="inputWrapper">
           <div class="inputLabel">First Name</div>
@@ -23,7 +23,7 @@
           <input type="password" name="password" placeholder="Make it a good one!" />
         </div>
         <div class="inputWrapper">
-          <input type="checkbox" name="tosAgreement" value="agree">
+          <input type="checkbox" name="agreement" value="agree">
           <div class="inputLabel">I agree with terms and conditions</div>
         </div>
         <div class="inputWrapper ctaWrapper">

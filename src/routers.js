@@ -12,7 +12,7 @@ let routers = {
   //API json handlers
   'ping': pingController,
   'api/token': tokenController,
-  'api/user/': userController,
+  'api/user': userController,
   'api/menu': menuController,
   'api/cart': shoppingCartController,
   'api/order': orderController,
