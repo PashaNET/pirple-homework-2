@@ -134,7 +134,7 @@ app.bindForms = function(){
       app.client.request(undefined,'api/token','POST',undefined,newPayload,function(newStatusCode,newResponsePayload){
         // Display an error on the form if needed
         if(newStatusCode !== 200){
-  
+          //TODO Move to error handler 
           // Set the formError field with the error text
           document.querySelector("#"+formId+" .formError").innerHTML = 'Sorry, an error has occured. Please try again.';
   
@@ -144,7 +144,7 @@ app.bindForms = function(){
         } else {
           // If successful, set the token and redirect the user
           app.setSessionToken(newResponsePayload);
-          window.location = '/session/create';
+          window.location = '/menu';
         }
       });
     }
@@ -211,7 +211,7 @@ app.renewToken = function(callback){
       if(statusCode == 200){
         // Get the new token details
         var queryStringObject = {'id' : currentToken.id};
-        app.client.request(undefined,'api/token','GET',queryStringObject,undefined,function(statusCode,responsePayload){
+        app.client.request(undefined,'api/token', 'GET', queryStringObject, undefined, function(statusCode, responsePayload){
           // Display an error on the form if needed
           if(statusCode == 200){
             app.setSessionToken(responsePayload);

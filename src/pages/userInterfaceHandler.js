@@ -8,13 +8,15 @@ const fs = require('fs'),
       path = require('path'),
       config = require('../config'),
       validators = require('../servises/validators');
+const menu = require('../models/MenuItem');
 
 let pageHandlers = {
     favicon: faviconHandler,
     public: assetHandler,
     index: indexHandler,
     account: accountHandler,
-    login: loginHandler
+    login: loginHandler,
+    menu: menuHandler
 }
 
 function assetHandler(data, callback){ 
@@ -100,6 +102,45 @@ function loginHandler(data, callback){
     getTemplate(pageName, indexData, (err, template) => {
         if(!err){
             callback(false, template, 'html');
+        } else {
+            callback(true, err, 'html');
+        }
+    });
+}
+
+function menuHandler(data, callback){
+    let pageName = 'menu/menu',
+        itemTemplate = 'menu/item',
+        indexData = {
+            class: 'menu',
+            title: 'Products',
+            header: 'Our best products'
+        };
+
+    let pathToTemplate = path.join(__dirname, itemTemplate + '.html');
+    fs.readFile(pathToTemplate, 'utf8', (err, str) => {
+        if(!err){
+            //read goods from database
+            menu.getAll((err, message, items) => {
+                if(!err){
+                    let listTemplate = '';
+                    //create template for every item
+                    items.forEach((item) => {
+                        listTemplate += interpolate(str, item);
+                    });
+
+                    getTemplate(pageName, indexData, (err, template) => {
+                        if(!err){
+                            let templateWithItems = template.replace('{goodsList}', listTemplate);
+                            callback(false, templateWithItems, 'html');
+                        } else {
+                            callback(true, err, 'html');
+                        }
+                    });
+                } else {
+                    callback(400, {message: message});
+                }
+            });
         } else {
             callback(true, err, 'html');
         }
