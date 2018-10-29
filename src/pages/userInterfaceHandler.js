@@ -13,7 +13,8 @@ let pageHandlers = {
     favicon: faviconHandler,
     public: assetHandler,
     index: indexHandler,
-    account: accountHandler
+    account: accountHandler,
+    login: loginHandler
 }
 
 function assetHandler(data, callback){ 
@@ -88,6 +89,23 @@ function accountHandler(data, callback){
     });
 }
 
+function loginHandler(data, callback){
+    let pageName = 'login';
+    let indexData = {
+        class: 'login',
+        title: 'Login',
+        header: 'Put your email and password to get the access to your accoutn'
+    };
+
+    getTemplate(pageName, indexData, (err, template) => {
+        if(!err){
+            callback(false, template, 'html');
+        } else {
+            callback(true, err, 'html');
+        }
+    });
+}
+
 function getTemplate(pageName, pageData, callback){
     let pathToTemplate = path.join(__dirname, pageName + '.html');
 
@@ -126,7 +144,7 @@ function addUniversalTemplateParts(templateStr, callback){
 }
 
 /**
- * replace keys in template with values
+ * replace keys in template with their values
  * @param {*} params 
  */
 function interpolate(template, params){

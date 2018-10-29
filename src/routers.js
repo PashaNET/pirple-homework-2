@@ -26,7 +26,7 @@ let routers = {
   'account/edit': userInterfaceHandler.account,
   
   'account/logout': userInterfaceHandler.session, // delete token, then redirect to home page???
-  'session/create': userInterfaceHandler.session, // create token, then redirect to menu page
+  'session/create': userInterfaceHandler.login, // create token, then redirect to menu page
   
   'menu': userInterfaceHandler.menu,
   'cart': userInterfaceHandler.cart,
