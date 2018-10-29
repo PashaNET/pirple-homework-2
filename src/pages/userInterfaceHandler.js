@@ -12,7 +12,8 @@ const fs = require('fs'),
 let pageHandlers = {
     favicon: faviconHandler,
     public: assetHandler,
-    index: indexHandler
+    index: indexHandler,
+    account: accountHandler
 }
 
 function assetHandler(data, callback){ 
@@ -57,6 +58,24 @@ function indexHandler(data, callback){
         class: 'index',
         title: 'Home',
         header: 'Hello friend!',
+        text: 'This is the best internet shop. Please login or signup to see list of goods.'
+    };
+
+    getTemplate(pageName, indexData, (err, template) => {
+        if(!err){
+            callback(false, template, 'html');
+        } else {
+            callback(true, err, 'html');
+        }
+    });
+}
+
+function accountHandler(data, callback){
+    let pageName = 'account';
+    let indexData = {
+        class: 'account',
+        title: 'Create account',
+        header: 'Please fill all fields and press \'Create\'',
         text: 'This is the best internet shop. Please login or signup to see list of goods.'
     };
 

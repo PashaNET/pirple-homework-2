@@ -1,6 +1,33 @@
-<div>
-    <form action="">
-        <input type="text"/>
-        <input type="submit" />
+<h1>{header}</h1>
+<div class="formWrapper">
+    <form id="createAccount" action="account/create" method="POST">
+        <div class="formError"></div>
+        <div class="inputWrapper">
+          <div class="inputLabel">First Name</div>
+          <input type="text" name="firstName" placeholder="John" />
+        </div>
+        <div class="inputWrapper">
+          <div class="inputLabel">Last Name</div>
+          <input type="text" name="lastName" placeholder="Doe" />
+        </div>
+        <div class="inputWrapper">
+          <div class="inputLabel">Email</div>
+          <input type="email" name="email" placeholder="email@box.domain" />
+        </div>
+        <div class="inputWrapper">
+            <div class="inputLabel">Address</div>
+            <input type="text" name="address"/>
+        </div>
+        <div class="inputWrapper">
+          <div class="inputLabel">Password</div>
+          <input type="password" name="password" placeholder="Make it a good one!" />
+        </div>
+        <div class="inputWrapper">
+          <input type="checkbox" name="tosAgreement" value="agree">
+          <div class="inputLabel">I agree with terms and conditions</div>
+        </div>
+        <div class="inputWrapper ctaWrapper">
+          <button type="submit" class="cta blue">Create</button>
+        </div>    
     </form>
 </div>
