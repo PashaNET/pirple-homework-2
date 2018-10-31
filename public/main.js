@@ -38,7 +38,7 @@ app.client = {
         // Form the http request as a JSON type
         let xhr = new XMLHttpRequest();
         xhr.open(method, requestUrl, true);
-        xhr.setRequestHeader("Content-type", "application/json");
+        xhr.setRequestHeader('Content-type', 'application/json');
       
         // For each header sent, add it to the request
         for(let headerKey in headers) {
@@ -49,7 +49,7 @@ app.client = {
       
         // Add sessiontoken as a header
         if(app.config.sessionToken) {
-          xhr.setRequestHeader("token", app.config.sessionToken.id);
+          xhr.setRequestHeader('token', app.config.sessionToken.tokenId);
         }
       
         //Handle the response
@@ -78,16 +78,19 @@ app.client = {
 
 // Bind the forms
 app.bindForms = () => {
-    document.querySelector("form").addEventListener("submit", function(e) {
-      // Stop it from submitting
+    let form = document.querySelector('form');
+    if(!form) return;
+
+    form.addEventListener('submit', function(e) {
       e.preventDefault();
+
       let formId = this.id;
       let path = this.action;
       let method = this.method.toUpperCase();
-      let form = document.querySelector("#" + formId + " .formError");
+      let formErrorField = document.querySelector('#' + formId + ' .formError');
   
       // Hide the error message (if it's currently shown due to a previous error)
-      form.style.display = 'hidden';
+      formErrorField.style.display = 'hidden';
   
       // Turn the inputs into a payload
       let payload = {};
@@ -108,10 +111,10 @@ app.bindForms = () => {
           let error = typeof(responsePayload.message) == 'string' ? responsePayload.message : 'An error has occured, please try again';
   
           // Set the formError field with the error text//TODO one selector
-          form.innerHTML = error;
+          formErrorField.innerHTML = error;
   
           // Show (unhide) the form error field on the form
-          form.style.display = 'block';
+          formErrorField.style.display = 'block';
         } else {
           // If successful, send to form response processor
           app.formResponseProcessor(formId, payload, responsePayload);
@@ -127,27 +130,32 @@ app.bindForms = () => {
     // If account creation was successful, try to immediately log the user in
     if(formId == 'accountCreate'){
       // Take the email and password, and use it to log the user in
-      let newPayload = {
-        'email' : requestPayload.email,
-        'password' : requestPayload.password
-      };
-  
-      app.client.request(undefined,'api/token','POST',undefined,newPayload,function(newStatusCode,newResponsePayload){
+      let params = {
+        path: 'api/token',
+        method: 'POST',
+        payload: {
+          email : requestPayload.email,
+          password : requestPayload.password
+        }
+      }
+      params.callback = (newStatusCode, newResponsePayload) => {
         // Display an error on the form if needed
         if(newStatusCode !== 200){
-          //TODO Move to error handler 
+          let formErrorField = document.querySelector('#' + formId + ' .formError');
+          
           // Set the formError field with the error text
-          document.querySelector("#"+formId+" .formError").innerHTML = 'Sorry, an error has occured. Please try again.';
+          formErrorField.innerHTML = newResponsePayload.message;
   
           // Show (unhide) the form error field on the form
-          document.querySelector("#"+formId+" .formError").style.display = 'block';
+          formErrorField.style.display = 'block';
   
         } else {
           // If successful, set the token and redirect the user
           app.setSessionToken(newResponsePayload);
           window.location = '/menu';
         }
-      });
+      };
+      app.client.request(params);
     }
     // If login was successful, set the token in localstorage and redirect the user
     if(formId == 'sessionCreate'){
@@ -173,7 +181,7 @@ app.getSessionToken = () => {
 
 // Set (or remove) the loggedIn class from the body
 app.setLoggedInClass = function(add){
-  let target = document.querySelector("body"),
+  let target = document.querySelector('body'),
       loggedInClass = add ? 'loggedIn' : 'loggedIn';
 
   target.classList.remove(loggedInClass);
@@ -183,7 +191,7 @@ app.setLoggedInClass = function(add){
 app.setSessionToken = function(token){
   app.config.sessionToken = token;
   let tokenString = JSON.stringify(token);
-  localStorage.setItem('token',tokenString);
+  localStorage.setItem('token', tokenString);
 
   app.setLoggedInClass(typeof(token) == 'object');
 };
@@ -192,38 +200,26 @@ app.setSessionToken = function(token){
 app.renewToken = function(callback){
   let currentToken = typeof(app.config.sessionToken) == 'object' ? app.config.sessionToken : false;
   if(currentToken){
-    // Update the token with a new expiration
-    let payload = {
-      'id' : currentToken.id,
-      'extend' : true,
-    };
+    //prepare params for token update
     let params = {
       path: 'api/token',
       method: 'PUT',
-      payload
+      payload: {
+        email: currentToken.email,
+        extend : true
+      }
     }
     params.callback = (statusCode, responsePayload) => {
-      //TODO return token in PUT 
-      // Display an error on the form if needed
       if(statusCode == 200){
-        // Get the new token details
-        let queryStringObject = {'id' : currentToken.id};
-        app.client.request(undefined,'api/token', 'GET', queryStringObject, undefined, function(statusCode, responsePayload){
-          // Display an error on the form if needed
-          if(statusCode == 200){
-            app.setSessionToken(responsePayload);
-            callback(false);
-          } else {
-            app.setSessionToken(false);
-            callback(true);
-          }
-        });
+        app.setSessionToken(responsePayload);
+        callback(false);
       } else {
         app.setSessionToken(false);
         callback(true);
       }
     }
-    
+
+    // Update the token with a new expiration
     app.client.request(params);
   } else {
     app.setSessionToken(false);
@@ -236,10 +232,10 @@ app.tokenRenewalLoop = () => {
   setInterval(() => {
     app.renewToken((err) => {
       if(!err){
-        console.log("Token renewed successfully @ "+Date.now());
+        console.log('Token renewed successfully @ ' + Date.now());
       }
     });
-  }, 1000 * 60);
+  }, 5000);
 };
 
 // Init (bootstrapping)

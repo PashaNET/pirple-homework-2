@@ -73,8 +73,13 @@ _user.post = (data, callback) => {
                 let user = new User(data);
                 //check if income data valid
                 if(user.isValid()){
+                    //create user record in database
                     user.create((err, message) => {
-                        callback(200, {message: message});
+                        if(!err){
+                            callback(200, {user: user});
+                        } else {
+                            callback(400, {message: message});
+                        }
                     });
                 } else {
                     callback(400, {message: 'Missing required params or user already exist'});
