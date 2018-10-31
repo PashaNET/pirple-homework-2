@@ -64,6 +64,7 @@ server.unifiedServer = (req, res) => {
             contentType = 'image/png';
             break;
           case 'jpg':
+          case 'jpeg':
             responseData = typeof(data) !== 'undefined' ? data : '';
             contentType = 'image/jpeg';
             break;

@@ -118,19 +118,21 @@ function menuHandler(data, callback){
         };
 
     let pathToTemplate = path.join(__dirname, itemTemplate + '.html');
+    //get template for single item
     fs.readFile(pathToTemplate, 'utf8', (err, str) => {
         if(!err){
-            //read goods from database
+            //read items from database
             menu.getAll((err, message, items) => {
                 if(!err){
                     let listTemplate = '';
-                    //create template for every item
+                    //fill template for every item with values
                     items.forEach((item) => {
                         listTemplate += interpolate(str, item);
                     });
-
+                    //get universal template
                     getTemplate(pageName, indexData, (err, template) => {
                         if(!err){
+                            //replace holder for items with created template
                             let templateWithItems = template.replace('{goodsList}', listTemplate);
                             callback(false, templateWithItems, 'html');
                         } else {
