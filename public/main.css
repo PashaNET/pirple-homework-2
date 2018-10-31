@@ -1,6 +1,11 @@
 /* Copy from Github */
 
 /* Resets a:hover,*/
+body {
+  display: flex;
+  flex-direction: column;
+}
+
 body,p,h1,h2,h3,h4,h5,h6,div,span,header,footer,img,a,a:active,a:visited,table,tr,td,th,form,input,button,select,textarea{
     line-height: 100%;
     padding: 0;
@@ -67,6 +72,7 @@ body,p,h1,h2,h3,h4,h5,h6,div,span,header,footer,img,a,a:active,a:visited,table,t
     width: 1000px;
     margin: 150px auto;
     /* height: 45%; */
+    flex: 1;
   }
   
   .footer{
