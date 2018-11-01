@@ -121,7 +121,7 @@ _token.put = (data, callback) => {
 
 _token.delete = (data, callback) => {
     //check if icome parameter suit requirements
-    let isIdValid = validators.isValidString(data.id);
+    let isIdValid = validators.isValidString(data.id); //TODO take from header
 
     if(isIdValid){
         //read token by id

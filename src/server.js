@@ -30,7 +30,7 @@ server.unifiedServer = (req, res) => {
     
     req.on('end', () => {
       //get payloadData depending on method
-      let payload = (['get', 'delete'].indexOf(method) > -1) ? parsedUrl.query : helpers.safeJsonParse(buffer);
+      let payload = (['get'].indexOf(method) > -1) ? parsedUrl.query : helpers.safeJsonParse(buffer);
       
       //define params for handler
       let data = {

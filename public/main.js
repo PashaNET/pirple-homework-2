@@ -182,9 +182,15 @@ app.getSessionToken = () => {
 // Set (or remove) the loggedIn class from the body
 app.setLoggedInClass = function(add){
   let target = document.querySelector('body'),
-      loggedInClass = add ? 'loggedIn' : 'loggedIn';
+      loggedInClass = add ? 'loggedIn' : 'loggedOut';
 
-  target.classList.remove(loggedInClass);
+  if(add){
+    target.classList.remove('loggedOut');
+  } else {
+    target.classList.remove('loggedIn');
+  }
+  
+  target.classList.add(loggedInClass);
 };
 
 // Set the session token in the app.config object as well as localstorage
@@ -197,16 +203,17 @@ app.setSessionToken = function(token){
 };
 
 // Renew the token
-app.renewToken = function(callback){
+app.updateToken = (method, additionalParams, callback) => {
   let currentToken = typeof(app.config.sessionToken) == 'object' ? app.config.sessionToken : false;
   if(currentToken){
     //prepare params for token update
     let params = {
       path: 'api/token',
-      method: 'PUT',
+      method: method,
       payload: {
+        id: currentToken.tokenId,
         email: currentToken.email,
-        extend : true
+        ...additionalParams
       }
     }
     params.callback = (statusCode, responsePayload) => {
@@ -230,13 +237,25 @@ app.renewToken = function(callback){
 // Loop to renew token often
 app.tokenRenewalLoop = () => {
   setInterval(() => {
-    app.renewToken((err) => {
+    app.updateToken('PUT', {extend : true}, (err) => {
       if(!err){
         console.log('Token renewed successfully @ ' + Date.now());
       }
     });
-  }, 5000);
+  }, 1000 * 6000);
 };
+
+app.bindLogout = () => {
+  document.getElementById('logout-menu-item').addEventListener('click', (e) => {
+    e.preventDefault();
+
+    app.updateToken('DELETE', {}, (err) => {
+      if(!err){
+        console.log('Token was deleted successfully @ ' + Date.now());
+      }
+    });
+  });
+}
 
 // Init (bootstrapping)
 app.init = () => {
@@ -246,6 +265,8 @@ app.init = () => {
   app.getSessionToken();
   // Renew token
   app.tokenRenewalLoop();
+  //Bind 'Logout' button
+  app.bindLogout();
 };
 
 // Call the init processes after the window loads

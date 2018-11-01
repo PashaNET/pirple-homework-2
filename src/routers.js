@@ -20,7 +20,7 @@ let routers = {
     callback(403, {}, 'html');
   },
 
-  //HTML handlers
+  //HTML handlers//TODO access to some of them only with token 
   '': userInterfaceHandler.index,
   'account/create': userInterfaceHandler.account,
   'account/edit': userInterfaceHandler.account,
