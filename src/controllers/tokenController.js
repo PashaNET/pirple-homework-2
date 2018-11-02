@@ -77,7 +77,7 @@ _token.post = (data, callback) => {
                         if(!err){
                             callback(200, token);
                         } else {
-                            callback(400, {message: 'Can\'t create token file'});
+                            callback(400, {message: 'Can\'t create token file', err: err});
                         }
                     });
                 } else {

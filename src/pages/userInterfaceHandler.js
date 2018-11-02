@@ -16,7 +16,8 @@ let pageHandlers = {
     index: indexHandler,
     account: accountHandler,
     login: loginHandler,
-    menu: menuHandler
+    menu: menuHandler,
+    cart: cartHandler
 }
 
 function assetHandler(data, callback){ 
@@ -147,6 +148,10 @@ function menuHandler(data, callback){
             callback(true, err, 'html');
         }
     });
+}
+
+function cartHandler(data, callback){
+
 }
 
 function getTemplate(pageName, pageData, callback){

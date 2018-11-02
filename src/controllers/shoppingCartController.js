@@ -6,10 +6,10 @@ const validators = require('../servises/validators'),
 let shoppingCart = (data, callback) => {
     //permitted methods for controller
     const allowedMethods = {
-        get: { needVerification: true }, 
-        put: { needVerification: true }, 
-        post: { needVerification: true }, 
-        delete:{ needVerification: true }
+        get: {needVerification: true}, 
+        put: {needVerification: true}, 
+        post: {needVerification: true}, 
+        delete:{needVerification: true}
     };
 
     //check if request method allowed for this controller
@@ -58,18 +58,18 @@ _shoppingCart.get = (data, callback) => {
 
 _shoppingCart.post = (data, callback) => {
     //check if params suit requirements
-    let isEmailValid = validators.isValidEmail(data.email),
-        isNotEmptyItems = validators.isNotEmptyArray(data.items);
-
-    if(isEmailValid && isNotEmptyItems){
+    // let isEmailValid = validators.isValidEmail(data.email),
+    let isNotEmptyItems = validators.isNotEmptyArray(data.items);
+//isEmailValid && 
+    if(isNotEmptyItems){
         //create instanse of cart
         let cart = new ShoppingCart(data);
         
         //validate cart
         if(cart.isValid()){
             cart.create((err, message) => {
-                responseCode = err ? 400 : 200;
-                callback(responseCode, {message: message});
+                let respCode = err ? 400 : 200;
+                callback(respCode, {message: message});
             });
         } else {
             callback(400, {message: 'Missing required params'});
@@ -88,9 +88,8 @@ _shoppingCart.put = (data, callback) => {
         //check if cart already exist
         cart.update((err, message) => {
             //get responseCode
-            let responseCode = err ? 200 : 400;
-
-            callback(responseCode, {message: message});
+            let respCode = err ? 200 : 400;
+            callback(respCode, {message: message});
         });
     } else {
         callback(400, {message: 'Missed required params'});
@@ -107,7 +106,8 @@ _shoppingCart.delete = (data, callback) => {
             if(!err){
                 //if the no error, we can delete this cart
                 cart.delete((err, message) => {
-                    callback(400, {message: message});
+                    let respCode = err ? 400 : 200;
+                    callback(respCode, {message: message});
                 });
             } else {
                 //such cart doesn't exist 
