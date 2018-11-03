@@ -71,7 +71,7 @@ database.update = (dir, fileName, data, callback) => {
                 if(!err){
                     fs.close(fileDescriptor, (err) => {
                         let responseMessage = err ? 'Can\'t close file' : 'Data has been updated';
-                        callback(_prepareResponse(responseMessage, err));
+                        callback(_prepareResponse(responseMessage, err, data));
                     });
                 } else {
                     callback(_prepareResponse('Can\'t write to file', err));

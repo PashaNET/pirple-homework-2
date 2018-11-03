@@ -8,7 +8,8 @@ const fs = require('fs'),
       path = require('path'),
       config = require('../config'),
       validators = require('../servises/validators');
-const menu = require('../models/MenuItem');
+const menu = require('../models/MenuItem'),
+      shoppingCart = require('../models/ShoppingCart');
 
 let pageHandlers = {
     favicon: faviconHandler,
@@ -151,7 +152,50 @@ function menuHandler(data, callback){
 }
 
 function cartHandler(data, callback){
+    let pageName = 'cart/cart',
+    itemTemplate = 'cart/item',
+    indexData = {
+        class: 'cart',
+        title: 'Cart',
+        header: 'Cart list',
+        scripts: ['/public/cart.js']
+    };
 
+    let pathToTemplate = path.join(__dirname, itemTemplate + '.html');
+
+    //get template for single cart item
+    fs.readFile(pathToTemplate, 'utf8', (err, str) => {
+        if(!err){
+            //read items from database
+            shoppingCart.getById('7q42ber4hdrj2sa', (err, message, cart) => {
+                let listTemplate = "<p>There is no items in your cart</p>"
+                if(!err){
+                    if(cart.items.length > 0) {
+                        listTemplate = '';
+                        //fill template for every item with values
+                        cart.items.forEach((item) => {
+                            listTemplate += interpolate(str, item);
+                        });
+                    }
+
+                    //get universal template
+                    getTemplate(pageName, indexData, (err, template) => {
+                        if(!err){
+                            //replace holder for items with created template
+                            let templateWithItems = template.replace('{cartList}', listTemplate);
+                            callback(false, templateWithItems, 'html');
+                        } else {
+                            callback(true, err, 'html');
+                        }
+                    });
+                } else {
+                    callback(true, listTemplate + message, 'html');
+                }
+            });
+        } else {
+            callback(true, listTemplate, 'html');
+        }
+    });
 }
 
 function getTemplate(pageName, pageData, callback){

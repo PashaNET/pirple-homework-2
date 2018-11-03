@@ -9,7 +9,7 @@ const helpers = require('../servises/helpers'),
 
 class ShoppingCart {
     constructor(data = {}){
-        this.id = helpers.getRandomString(15);
+        this.id = data.id || helpers.getRandomString(15);
         this.items = data.items;// {itemId: 1, quantity: 2}
     }
 

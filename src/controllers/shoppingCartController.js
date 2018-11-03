@@ -69,7 +69,7 @@ _shoppingCart.post = (data, callback) => {
         if(cart.isValid()){
             cart.create((err, message) => {
                 let respCode = err ? 400 : 200;
-                callback(respCode, {message: message});
+                callback(respCode, {message: message, cart: cart});
             });
         } else {
             callback(400, {message: 'Missing required params'});
@@ -80,20 +80,19 @@ _shoppingCart.post = (data, callback) => {
 };
 
 _shoppingCart.put = (data, callback) => {
-    //create new cart instance
-    let cart = new ShoppingCart(data);
-
-    //check if income data valid
-    if(cart.isValid()){
-        //check if cart already exist
-        cart.update((err, message) => {
-            //get responseCode
-            let respCode = err ? 200 : 400;
-            callback(respCode, {message: message});
-        });
-    } else {
-        callback(400, {message: 'Missed required params'});
-    }
+    //get cart instance by id
+    ShoppingCart.getById(data.id, (err, message, cart) => {
+        if(!err && cart){
+            cart.items.push(data.items[0]);
+            cart.update((err, message, updatedCart) => {
+                //get responseCode
+                let respCode = err ? 400 : 200;
+                callback(respCode, {message: message, cart: updatedCart});
+            });
+        } else {
+            callback(400, {message: 'Missed required params'});
+        }
+    });
 };
 
 _shoppingCart.delete = (data, callback) => {

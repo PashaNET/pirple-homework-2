@@ -239,7 +239,7 @@ app.tokenRenewalLoop = () => {
   setInterval(() => {
     app.updateToken('PUT', {extend : true}, (err) => {
       if(!err){
-        console.log('Token renewed successfully @ ' + Date.now());
+        console.log('Token renewed successfully');
       }
     });
   }, 1000 * 6000);
@@ -248,13 +248,48 @@ app.tokenRenewalLoop = () => {
 app.bindLogout = () => {
   document.getElementById('logout-menu-item').addEventListener('click', (e) => {
     e.preventDefault();
-
+    
     app.updateToken('DELETE', {}, (err) => {
       if(!err){
-        console.log('Token was deleted successfully @ ' + Date.now());
+        console.log('Token was deleted successfully');
       }
     });
   });
+}
+app.bindAddCart = () => {
+  let buttons = document.getElementsByClassName('add-cart-button');
+  if(buttons.length == 0) return 
+
+  for(let i = 0; i < buttons.length; i++) {
+    buttons[i].addEventListener('click', function(e) {
+      e.preventDefault();
+
+      let itemId = buttons[i].dataset.id,
+          cartId = localStorage.getItem('cartId'),
+          method = cartId ? 'PUT' : 'POST',
+          payload = {
+            email: app.config.sessionToken.email,
+            id: cartId,
+            items: [{itemId: itemId, quantity: 1}]
+          }
+
+      let params = {path: '/api/cart', method, payload};
+      params.callback = (statusCode, responsePayload) => {
+        // Display an error on the form if needed
+        if(statusCode !== 200){
+          alert('Error: ' + responsePayload.message);
+        } else {
+          if(responsePayload.cart && responsePayload.cart.id){
+            localStorage.setItem('cartId', responsePayload.cart.id);
+          }
+
+          alert('Item has been added to cart!');
+        }
+      }
+
+      app.client.request(params);
+    });
+  }
 }
 
 // Init (bootstrapping)
@@ -267,6 +302,8 @@ app.init = () => {
   app.tokenRenewalLoop();
   //Bind 'Logout' button
   app.bindLogout();
+  //Bind 'Add to the cart' buttons 
+  app.bindAddCart()
 };
 
 // Call the init processes after the window loads
