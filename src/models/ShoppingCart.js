@@ -5,12 +5,14 @@
 //Dependencies
 const helpers = require('../servises/helpers'),
       validators = require('../servises/validators'),
-      database = require('../servises/database');  
+      database = require('../servises/database'),
+      Menu = require('../models/MenuItem');
 
 class ShoppingCart {
     constructor(data = {}){
         this.id = data.id || helpers.getRandomString(15);
-        this.items = data.items;// {itemId: 1, quantity: 2}
+        this.items = data.items;// {itemId: 1, itemName: '', quantity: 2}
+        this.amount = data.amount;
     }
 
     /**
@@ -27,6 +29,31 @@ class ShoppingCart {
         let isItemsValid = validators.isNotEmptyArray(this.items);
 
         return isItemsValid;
+    }
+
+    /**
+     * Read goods from db, get their prices and return totalAmount 
+     * @param {*} callback 
+     */
+    getTotalAmount(callback){
+        Menu.getAll((err, message, products) => {
+            if(!err){
+                let totalPrice = 0;
+
+                //get all items in cart
+                this.items.forEach((item) => {
+                    //find product by his id in cart and get his price
+                    products.forEach((product) => {
+                        if(product.id === item.itemId){
+                            totalPrice += parseFloat(product.price);
+                        }
+                    });
+                });
+                callback(false, totalPrice);
+            } else {
+                callback(err, {message: message});
+            }
+        });
     }
 
     /**
@@ -52,18 +79,31 @@ class ShoppingCart {
     create(callback){
         //create hash for password
         this.password = helpers.hash(this.password);
-        
-        //create file for new cart
-        database.create(ShoppingCart.getCollectionName(), this.id, this, (response) => {
-            //return response to controller 
-            callback(response.err, response.message);
+        this.getTotalAmount((err, totalAmount) => {
+            if(!err){
+                this.amount = totalAmount;
+                //create file for new cart
+                database.create(ShoppingCart.getCollectionName(), this.id, this, (response) => {
+                    //return response to controller 
+                    callback(response.err, response.message, response.data);
+                });
+            } else {
+                callback(err, 'Can\'t count totalAmount');
+            }
         });
     }
 
     update(callback){
-        database.update(ShoppingCart.getCollectionName(), this.id, this, (response) => {
-            //return response to controller 
-            callback(response.err, response.message, response.data);
+        this.getTotalAmount((err, totalAmount) => {
+            if(!err){
+                this.amount = totalAmount;
+                database.update(ShoppingCart.getCollectionName(), this.id, this, (response) => {
+                    //return response to controller 
+                    callback(response.err, response.message, response.data);
+                });
+            } else {
+                callback(err, 'Can\'t count totalAmount');
+            }
         });
     }
 

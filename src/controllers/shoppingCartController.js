@@ -9,7 +9,7 @@ let shoppingCart = (data, callback) => {
         get: {needVerification: true}, 
         put: {needVerification: true}, 
         post: {needVerification: true}, 
-        delete:{needVerification: true}
+        delete: {needVerification: true}
     };
 
     //check if request method allowed for this controller

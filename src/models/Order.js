@@ -29,12 +29,11 @@ class Order {
      * Validation of necessary order fields 
      */
     isValid(){
-        let isIdValid = validators.isValidString(this.id),
-            isShoppingCartIdValid = validators.isValidString(this.shoppingCartId),
-            isAmountValid = validators.isValidString(this.amount),
+        let isShoppingCartIdValid = validators.isValidString(this.shoppingCartId),
+            isAmountValid = validators.isValidNumber(this.amount),
             isSourceValid = validators.isValidString(this.source);
 
-        return isIdValid && isShoppingCartIdValid && isAmountValid && isSourceValid;
+        return isShoppingCartIdValid && isAmountValid && isSourceValid;
     }
 
     /**

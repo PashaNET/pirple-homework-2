@@ -5,6 +5,10 @@ validators.isValidString = (str) => {
     return typeof(str) == 'string' && str.trim().length > 0;
 };
 
+validators.isValidNumber = (str) => {
+    return typeof(str) == 'number';
+};
+
 validators.isValidPhoneNumber = (str) => {
     return typeof(str) == 'string' && str.trim().length >= 10;
 };

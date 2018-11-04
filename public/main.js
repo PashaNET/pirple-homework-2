@@ -242,7 +242,7 @@ app.tokenRenewalLoop = () => {
         console.log('Token renewed successfully');
       }
     });
-  }, 1000 * 6000);
+  }, 1000 * 60);
 };
 
 app.bindLogout = () => {
@@ -256,7 +256,8 @@ app.bindLogout = () => {
     });
   });
 }
-app.bindAddCart = () => {
+
+app.bindAddCartButton = () => {
   let buttons = document.getElementsByClassName('add-cart-button');
   if(buttons.length == 0) return 
 
@@ -265,17 +266,18 @@ app.bindAddCart = () => {
       e.preventDefault();
 
       let itemId = buttons[i].dataset.id,
+          itemName = buttons[i].dataset.name,
           cartId = localStorage.getItem('cartId'),
           method = cartId ? 'PUT' : 'POST',
           payload = {
             email: app.config.sessionToken.email,
             id: cartId,
-            items: [{itemId: itemId, quantity: 1}]
+            items: [{itemId: itemId, itemName: itemName, quantity: 1}]
           }
 
       let params = {path: '/api/cart', method, payload};
       params.callback = (statusCode, responsePayload) => {
-        // Display an error on the form if needed
+        // Show allert with error 
         if(statusCode !== 200){
           alert('Error: ' + responsePayload.message);
         } else {
@@ -292,6 +294,55 @@ app.bindAddCart = () => {
   }
 }
 
+app.bindCart = () => {
+  let cartIcon = document.getElementById('cart-item');
+  
+  cartIcon.addEventListener('click', function(e) {
+    e.preventDefault();
+
+    window.location = '/cart?id=' + localStorage.getItem('cartId');
+  });
+}
+
+app.bindCreateOrder = () => {
+  let orderButton = document.getElementById('create-order');
+  if(!orderButton) return;
+
+  orderButton.addEventListener('click', function(e) {
+    e.preventDefault();
+
+    let clientEmail = app.config.sessionToken.email;
+    if(!clientEmail) alert('Please loging before placing order');
+    
+    let payload = {
+          source: clientEmail,
+          shoppingCartId: localStorage.getItem('cartId'),
+          currency: 'USD',
+          description: ''
+        }
+
+    let params = {
+      path: '/api/order', 
+      method: 'POST', 
+      payload
+    };
+    params.callback = (statusCode, responsePayload) => {
+      // Show allert with error 
+      if(statusCode !== 200){
+        alert('Error: ' + responsePayload.message);
+      } else {
+        if(responsePayload){
+          localStorage.removeItem('cartId');
+        }
+
+        alert('Thank you for your order!');
+      }
+    }
+
+    app.client.request(params);
+  });
+}
+
 // Init (bootstrapping)
 app.init = () => {
   // Bind all form submissions
@@ -300,10 +351,16 @@ app.init = () => {
   app.getSessionToken();
   // Renew token
   app.tokenRenewalLoop();
-  //Bind 'Logout' button
+  
+  //Buttons
+  //'Logout' 
   app.bindLogout();
-  //Bind 'Add to the cart' buttons 
-  app.bindAddCart()
+  //'Add to the cart'  
+  app.bindAddCartButton()
+  //'Cart'
+  app.bindCart()
+  //'Create order' 
+  app.bindCreateOrder()
 };
 
 // Call the init processes after the window loads

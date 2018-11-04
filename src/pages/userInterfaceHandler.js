@@ -158,7 +158,7 @@ function cartHandler(data, callback){
         class: 'cart',
         title: 'Cart',
         header: 'Cart list',
-        scripts: ['/public/cart.js']
+        scripts: ['/public/cart.js']//TODO implement possibility to add scripts to pages
     };
 
     let pathToTemplate = path.join(__dirname, itemTemplate + '.html');
@@ -167,7 +167,7 @@ function cartHandler(data, callback){
     fs.readFile(pathToTemplate, 'utf8', (err, str) => {
         if(!err){
             //read items from database
-            shoppingCart.getById('7q42ber4hdrj2sa', (err, message, cart) => {
+            shoppingCart.getById(data.payload.id, (err, message, cart) => {
                 let listTemplate = "<p>There is no items in your cart</p>"
                 if(!err){
                     if(cart.items.length > 0) {
@@ -254,7 +254,7 @@ function interpolate(template, params){
     for(let key in params){
         if(params.hasOwnProperty(key)){
             let find = '{' + key + '}';
-            template = template.replace(find, params[key]);
+            template = template.split(find).join(params[key]);
         }
     }
 

@@ -2,6 +2,7 @@
 const validators = require('../servises/validators'),
       Order = require('../models/Order'),
       Token = require('../models/Token'),
+      ShoppingCart = require('../models/ShoppingCart'),
       stripe = require('../servises/stripe'),
       mailgun = require('../servises/mailgun');
 
@@ -63,46 +64,55 @@ _order.post = (data, callback) => {
     let isCartIdValid = validators.isValidString(data.shoppingCartId);
 
     if(isCartIdValid){
-        //check if order already exist
-        Order.getById(data.shoppingCartId, (err, message) => {
-            if(err){
-                //order doesn't exist so create new one
-                let order = new Order(data);
-                
-                //check if income data valid
-                if(order.isValid()){
-                    order.create((err, message) => {
-                        if(!err){
-                            //send request to stripe
-                            stripe.charge(order, (err, response) => {//TODO use async/await for services
+        ShoppingCart.getById(data.shoppingCartId, (err, message, cart) => {
+            if(!err) {
+                //add totalAmount to order data
+                data.amount = cart.amount;
+
+                //check if order already exist
+                Order.getById(data.shoppingCartId, (err, message) => {
+                    if(err){
+                        //order doesn't exist so create new one
+                        let order = new Order(data);
+                        
+                        //check if income data valid
+                        if(order.isValid()){
+                            order.create((err, message) => {
                                 if(!err){
-                                    //update order status and save 
-                                    order.status = 'payed';
-                                    order.update((err, message) => {
+                                    //send request to stripe
+                                    stripe.charge(order, (err, response) => {//TODO use async/await for services
                                         if(!err){
-                                            //send email-notification to user about success order
-                                            mailgun.send(order, 'order', () => {});
-                                            
-                                            //return response to client
-                                            callback(200, response);
+                                            //update order status and save 
+                                            order.status = 'payed';
+                                            order.update((err, message) => {
+                                                if(!err){
+                                                    //send email-notification to user about success order
+                                                    mailgun.send(order, 'order', () => {});
+                                                    
+                                                    //return response to client
+                                                    callback(200, response);
+                                                } else {
+                                                    callback(500, {message: message});
+                                                }
+                                            });
                                         } else {
-                                            callback(500, {message: message});
+                                            callback(500, response);
                                         }
                                     });
                                 } else {
-                                    callback(500, response);
+                                    callback(500, {message: message});
                                 }
                             });
                         } else {
-                            callback(500, {message: message});
+                            callback(400, {message: 'Required params is invalid'});
                         }
-                    });
-                } else {
-                    callback(400, {message: 'Required params is invalid'});
-                }
+                    } else {
+                        //there exist order with that id 
+                        callback(400, {message: 'Such order already exist'});
+                    }
+                });
             } else {
-                //there exist order with that id 
-                callback(400, {message: 'Such order already exist'});
+                callback(400, {message: message});
             }
         });
     } else {
