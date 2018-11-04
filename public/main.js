@@ -313,7 +313,7 @@ app.bindCreateOrder = () => {
 
     let clientEmail = app.config.sessionToken.email;
     if(!clientEmail) alert('Please loging before placing order');
-    
+
     let payload = {
           source: clientEmail,
           shoppingCartId: localStorage.getItem('cartId'),
@@ -336,6 +336,7 @@ app.bindCreateOrder = () => {
         }
 
         alert('Thank you for your order!');
+        window.location = '/menu';
       }
     }
 

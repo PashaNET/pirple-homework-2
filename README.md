@@ -1,110 +1,52 @@
 # pirple.com
-Homework Assignment #2, #3
+Homework Assignment #3
   
 Project structure:
 ```bash
 ├── .data
 ├── https
+├── public
+│   ├── images
+│   ├── main.css
+│   └── main.js
 ├── src
 │   ├── controllers
 │   ├── emailTemplates
 │   ├── models
+│   ├── pages
+│   │   ├── cart
+│   │   │   ├── cart.html
+│   │   │   └── item.html
+│   │   ├── layout
+│   │   │   ├── header.html
+│   │   │   └── footer.html
+│   │   ├── menu
+│   │   │   ├── menu.html
+│   │   │   └── item.html
+│   │   ├── account.html
+│   │   ├── index.html
+│   │   ├── login.html
+│   │   ├── order.html
+│   │   └── userInterfaceHandler.js
 │   ├── services
 │   ├── config.js
 │   ├── routers.js
 │   └── server.js
 ├── index.js
 ├── README.md
+├── favicon.ico
 └── .gitignore
 ```
 
-  server.js file responsible for choosing proper controller according to request. Every conroller works with certain model which reaponsible for operations with db and other logic related to this model.  
-  
-Short API description with examples of parameters and data to be present in requests
+Simple UI for API
 
-#/user 
 
-    post - create 
-        {
-            "firstName":"..",
-            "lastName":"..",
-            "email": "test@n.com",
-            "address": "...",
-            "phone":"..",
-            "agreement":true,
-            "password":".."
-        }
-        
-    get  - read 
-        * token in header is required
-        {
-            "email": "test@n.com"
-        }
-    put - update
-        * token in header is required
-        {
-            "email": "test@n.com"
-            //any user field
-        }
-    delete - delete 
-        * token in header is required
-        {
-            "email": "test@n.com"
-        }
-#/token
-
-    post - create 
-        {
-            "email": "test@n.com",
-            "password":".."
-        }
-        
-    get  - read 
-        * token in header is required
-        {
-            id: ".."
-        }
-    put - update
-        * token in header is required
-        {
-        	"id": "..",
-	        "extend": true
-        }
-    delete - delete 
-        * token in header is required
-        {
-            "id": ".."
-        }
-#/menu
-
-	get - read 
-        * token in header is required
-        {
-            "email": "test@n.com"
-        }
-#/cart
-
-        post - create 
-    	* token in header is required
-        {
-	    "email": "test@n.com"
-            "items": [{itemId: 1, quantity: 2}}
-        } 
-	
-	get - read
-	* token in header is required
-	{
-	    "id": "...." 
-	}
-#/order
-	
-	post - create 
-	{
-	     "shoppingCartId" : "343m7fj3xnm3inq",
-	     "status" : "created",
-	     "description" : "some text",
-	     "amount" : "300",
-	     "source" : "test@n.com",
-	     "currency" : "USD" 
-	}
-
+1. Signup
+    - go to 'home' page or '/session/create' page and fill all required fields
+2. View all the items available to order
+    - after you registered you will be redirect to pages with items
+3. Fill up a shopping cart
+    - one click on 'Add to cart button' adds it to cart. 
+    - to see all list, click on cart icon in the site menu
+4. Place an order (with fake credit card credentials), and receive an email receipt
+    - click 'Create order' to save to place order
