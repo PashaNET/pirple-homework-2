@@ -1,52 +1,28 @@
 # pirple.com
-Homework Assignment #3
+Homework Assignment #4
   
-Project structure:
+Command line interface :
 ```bash
-├── .data
-├── https
-├── public
-│   ├── images
-│   ├── main.css
-│   └── main.js
+
 ├── src
-│   ├── controllers
-│   ├── emailTemplates
-│   ├── models
-│   ├── pages
-│   │   ├── cart
-│   │   │   ├── cart.html
-│   │   │   └── item.html
-│   │   ├── layout
-│   │   │   ├── header.html
-│   │   │   └── footer.html
-│   │   ├── menu
-│   │   │   ├── menu.html
-│   │   │   └── item.html
+│   ├── cli
 │   │   ├── account.html
-│   │   ├── index.html
+│   │   ├── index.js
 │   │   ├── login.html
 │   │   ├── order.html
 │   │   └── userInterfaceHandler.js
-│   ├── services
-│   ├── config.js
-│   ├── routers.js
-│   └── server.js
-├── index.js
-├── README.md
-├── favicon.ico
-└── .gitignore
+
+
 ```
 
-Simple UI for API
+List of possible commands
 
+1. View all the current menu items
 
-1. Signup
-    - go to 'home' page or '/session/create' page and fill all required fields
-2. View all the items available to order
-    - after you registered you will be redirect to pages with items
-3. Fill up a shopping cart
-    - one click on 'Add to cart button' adds it to cart. 
-    - to see all list, click on cart icon in the site menu
-4. Place an order (with fake credit card credentials), and receive an email receipt
-    - click 'Create order' to save to place order
+2. View all the recent orders in the system (orders placed in the last 24 hours)
+
+3. Lookup the details of a specific order by order ID
+
+4. View all the users who have signed up in the last 24 hours
+
+5. Lookup the details of a specific user by email address
