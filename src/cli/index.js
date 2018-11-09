@@ -7,34 +7,8 @@
      readline = require('readline'),
      util = require('util'),
     //  debug = require('debug'),
-     events = require('events');
-
- class Events extends events {}
-
- let ev = new Events();
- 
- ev.on('menu', (str) => {
-    process.exit(0);
- });
-
- ev.on('orders', (str) => {
-    process.exit(0);
- });
-
- ev.on('order', (str) => {
-    process.exit(0);
- });
-
- ev.on('users', (str) => {
-    process.exit(0);
- });
-
- ev.on('user', (str) => {
-    process.exit(0);
- });
-
- ev.on('help', (str) => {
-    let commandsDescription = {
+     events = require('events'),
+     cliCommands = {
         'menu': 'View all menu items',
         'orders --{time}': 'View orders placed in {time} hours', 
         'order --{id}': 'Lookup the details of a specific order by it ID', 
@@ -43,12 +17,8 @@
         'exit': 'Terminate CLI and server'
     };
 
-    
- });
-
- ev.on('exit', (str) => {
-    process.exit(0);
- });
+ class Events extends events {}
+ let ev = new Events();
 
  //Container for cli tasks
  let cli = {};
@@ -81,25 +51,100 @@
  cli.processInput = (input) => {
     let isValidInput = validators.isValidString(input);
     if(isValidInput){
-        let cliCommands = [
-            'menu',
-            'orders',
-            'order',
-            'users',
-            'user',
-            'help',
-            'exit'
-        ];
+        let commands = Object.keys(cliCommands);
         let command = input.trim().toLowerCase(),
-            commandIndex = cliCommands.indexOf(command);
+            commandIndex = commands.indexOf(command);
         //perform action if command exist in commands list
         if(commandIndex > -1) {
             ev.emit(input, commandIndex);
         } else {
-            console.log(input + ' - is not recognizable command');
+            console.log(input + ' - is not recognizable command!');
             console.log('Please, try again!');
         }
     }
  };
+
+ ev.on('menu', (str) => {
+    //
+ });
+
+ ev.on('orders', (str) => {
+    //
+ });
+
+ ev.on('order', (str) => {
+    //
+ });
+
+ ev.on('users', (str) => {
+    //
+ });
+
+ ev.on('user', (str) => {
+    //
+ });
+
+ ev.on('help', (str) => {
+    //
+    cli.horizontalLine();
+    cli.centeredHeader('CLI HELP');
+    cli.horizontalLine();
+    
+    //
+    for(let commandName in cliCommands){
+        if(cliCommands.hasOwnProperty(commandName)){
+            let value = cliCommands[commandName],
+                coloredCommandName = '\x1b[32m' + commandName + '\x1b[0m',
+                distanseBetweenNameAndDescription = 40,
+                padding  = distanseBetweenNameAndDescription - coloredCommandName.length;
+            
+            let line = coloredCommandName;
+
+            for(let i = 0; i < padding; i++){
+                line += ' ';
+            }
+
+            line += value;
+            console.log(line);
+        }
+    }
+
+    cli.horizontalLine();
+ });
+
+ //shud down cli app and stop server
+ ev.on('exit', (str) => {
+    process.exit(0);
+ });
+
+ //show horizontal dashed line on full screen width
+ cli.horizontalLine = () => {
+    let screenWidth = process.stdout.columns;
+    let line = '';
+    
+    for(let i = 0; i < screenWidth; i++){
+        line += '-';
+    }
+
+    console.log(line);
+ }
+
+//show centered line 
+ cli.centeredHeader = (str) => {
+    let isValidString = validators.isValidString(str);
+    if(isValidString){
+        let screenWidth = process.stdout.columns,
+            leftPadding = Math.floor((screenWidth - str.length)/2),
+            line = '';
+    
+        for(let i = 0; i < leftPadding; i++){
+            line += ' ';
+        }
+
+        console.log(line + str);
+    } else {
+        console.log(' ');
+    }
+ }
 
  module.exports = cli;
