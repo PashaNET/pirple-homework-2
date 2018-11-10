@@ -83,6 +83,7 @@ database.update = (dir, fileName, data, callback) => {
     });
 };
 
+//delete file 
 database.delete = (dir, fileName, callback) => {
     //Unlink the file
     fs.unlink(_concatPathToTheFile(dir, fileName), (err) => {
@@ -90,5 +91,13 @@ database.delete = (dir, fileName, callback) => {
         callback(_prepareResponse(responseMessage, err));
     });
 };
+
+//get all files located in dir 
+database.listAll = (collectionName, callback) => {
+    fs.readdir(basePath + '/' + collectionName, (err, files) => {
+        let responseMessage = err ? 'Can\'t read dir' : 'Ok';
+        callback(_prepareResponse(responseMessage, err, files));
+    });
+}
 
 module.exports = database;

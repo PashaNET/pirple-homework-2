@@ -16,6 +16,7 @@ class Order {
         this.amount = data.amount;
         this.currency = data.currency;
         this.source = data.source;
+        this.createdAt = data.createdAt || Date.now();
     }
 
     /**
@@ -34,6 +35,36 @@ class Order {
             isSourceValid = validators.isValidString(this.source);
 
         return isShoppingCartIdValid && isAmountValid && isSourceValid;
+    }
+
+    /**
+     * Get all orders which fit to the filter
+     * @param {*} filter 
+     * @param {*} callback 
+     */
+    static getAll(filter, callback){
+        database.listAll(Order.getCollectionName(), (response) => {
+            if(!response.err && response.data.length > 0){
+                //
+                response.data.forEach((item) => {
+                    let id = item.replace('.json', '');
+
+                    //convert to milliseconds and substruct from current date
+                    filter = Date.now() - (filter * 60 * 60 * 1000);
+
+                    Order.getById(id, (err, message, order) => {
+                        if(!err){
+                            //show only orders which have registration date greater than defined filter
+                            if(order.createdAt > filter){
+                                callback(false, order);
+                            }
+                        }
+                    });
+                });
+            } else {
+                callback(response.err, response.message, []);
+            }
+        });
     }
 
     /**

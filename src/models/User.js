@@ -15,8 +15,12 @@ class User {
         this.address = data.address;
         this.agreement = data.agreement;
         this.password = data.password;
+        this.createdAt = data.createdAt || Date.now();
     }
 
+    /**
+     * Returns the name of collection
+     */
     static getCollectionName() {
         return 'user';
     }
@@ -31,6 +35,36 @@ class User {
             isPasswordValid = validators.isValidPassword(this.password);
 
         return isFirstNameValid && isLastNameValid && isAgreementValid && isPasswordValid;
+    }
+    
+    /**
+     * Get all users
+     * @param {*} filter 
+     * @param {*} callback 
+     */
+    static getAll(filter, callback){
+        database.listAll(User.getCollectionName(), (response) => {
+            if(!response.err && response.data.length > 0){
+                
+                response.data.forEach((item) => {
+                    let email = item.replace('.json', '');
+
+                    //convert to milliseconds and substruct from current date
+                    filter = Date.now() - (filter * 60 * 60 * 1000);
+
+                    User.getById(email, (err, message, user) => {
+                        if(!err){
+                            //show only user which have registration date greater than defined filter
+                            if(user.createdAt > filter){
+                                callback(false, user);
+                            }
+                        }
+                    });
+                });
+            } else {
+                callback(response.err, response.message, []);
+            }
+        });
     }
 
     /**

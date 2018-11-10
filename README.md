@@ -6,23 +6,19 @@ Command line interface :
 
 ├── src
 │   ├── cli
-│   │   ├── account.html
-│   │   ├── index.js
-│   │   ├── login.html
-│   │   ├── order.html
-│   │   └── userInterfaceHandler.js
+│   │   └── index.js
 
 
 ```
 
 List of possible commands
 
-1. View all the current menu items
+1. menu - View all menu items
 
-2. View all the recent orders in the system (orders placed in the last 24 hours)
+2. orders --{period} - View all orders in the system which placed in the last {period} hours
 
-3. Lookup the details of a specific order by order ID
+3. order --{id} - Lookup the details of a specific order
 
-4. View all the users who have signed up in the last 24 hours
+4. users --{period} - View all the users who have signed up in the last {period} hours
 
-5. Lookup the details of a specific user by email address
+5. user --{email} - Lookup the details of a specific user by email address
